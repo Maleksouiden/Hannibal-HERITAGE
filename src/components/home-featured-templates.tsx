@@ -12,8 +12,7 @@ type HomeFeaturedTemplatesProps = {
 };
 
 /**
- * Moving featured templates under the sticky logo (SCRUM-7 / SCRUM-65).
- * Slides come from MySQL when configured; static seed is the fallback.
+ * Full-bleed rotating hero — Artisans Collection–style Discover slides.
  */
 export function HomeFeaturedTemplates({ templates }: HomeFeaturedTemplatesProps) {
   const [active, setActive] = useState(0);
@@ -35,7 +34,7 @@ export function HomeFeaturedTemplates({ templates }: HomeFeaturedTemplatesProps)
 
   return (
     <section
-      className="relative isolate min-h-[min(100dvh,56rem)] w-full overflow-hidden bg-[#1c1917] sm:min-h-[calc(100dvh-4rem)]"
+      className="relative isolate min-h-[min(100dvh,56rem)] w-full overflow-hidden bg-[#1c1917] sm:min-h-[calc(100dvh-4.25rem)]"
       aria-roledescription="carousel"
       aria-label="Featured collections"
       onMouseEnter={() => setPaused(true)}
@@ -68,15 +67,15 @@ export function HomeFeaturedTemplates({ templates }: HomeFeaturedTemplatesProps)
               }`}
             />
             <div
-              className="absolute inset-0 bg-gradient-to-t from-[#1c1917]/85 via-[#1c1917]/35 to-[#1c1917]/10"
+              className="absolute inset-0 bg-gradient-to-t from-[#1c1917]/88 via-[#1c1917]/40 to-[#1c1917]/20"
               aria-hidden
             />
 
-            <div className="absolute inset-x-0 bottom-0 mx-auto flex max-w-6xl flex-col gap-3 px-4 pb-20 pt-16 sm:gap-5 sm:px-6 sm:pb-24 sm:pt-24">
-              <p className="text-[10px] tracking-[0.22em] text-[#e8dfd0]/80 uppercase sm:text-xs">
+            <div className="absolute inset-x-0 bottom-0 mx-auto flex max-w-6xl flex-col gap-4 px-4 pb-24 pt-16 sm:gap-5 sm:px-6 sm:pb-28">
+              <p className="text-[10px] tracking-[0.28em] text-[#e8dfd0]/80 uppercase sm:text-xs">
                 {template.catalog === "sajnen" ? "Sejnane" : "Olive wood"}
               </p>
-              <h1 className="max-w-2xl text-2xl font-semibold tracking-tight text-balance text-[#f7f3ec] sm:text-5xl">
+              <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-balance text-[#f7f3ec] sm:text-5xl md:text-6xl">
                 {template.title}
               </h1>
               <p className="max-w-xl text-sm leading-6 text-[#e8dfd0]/90 sm:text-lg sm:leading-8">
@@ -85,10 +84,10 @@ export function HomeFeaturedTemplates({ templates }: HomeFeaturedTemplatesProps)
               <div>
                 <Link
                   href={template.href}
-                  className="inline-flex min-h-11 items-center border border-[#f7f3ec]/70 px-5 py-3 text-xs tracking-[0.18em] text-[#f7f3ec] uppercase transition hover:bg-[#f7f3ec] hover:text-[#1c1917]"
+                  className="inline-flex min-h-11 items-center border border-[#f7f3ec]/75 px-6 py-3 text-xs tracking-[0.2em] text-[#f7f3ec] uppercase transition hover:bg-[#f7f3ec] hover:text-[#1c1917]"
                   tabIndex={isActive ? 0 : -1}
                 >
-                  {template.ctaLabel}
+                  Discover
                 </Link>
               </div>
             </div>
@@ -102,16 +101,14 @@ export function HomeFeaturedTemplates({ templates }: HomeFeaturedTemplatesProps)
             <button
               key={template.id}
               type="button"
-              aria-label={`Show ${template.catalog === "sajnen" ? "Sejnane" : "Olive wood"} template`}
+              aria-label={`Show ${template.catalog === "sajnen" ? "Sejnane" : "Olive wood"} slide`}
               aria-current={index === active}
               className="flex min-h-11 min-w-11 items-center justify-center"
               onClick={() => setActive(index)}
             >
               <span
                 className={`block h-1.5 transition-all duration-500 ${
-                  index === active
-                    ? "w-8 bg-[#f7f3ec]"
-                    : "w-3 bg-[#f7f3ec]/40"
+                  index === active ? "w-8 bg-[#f7f3ec]" : "w-3 bg-[#f7f3ec]/40"
                 }`}
               />
             </button>
