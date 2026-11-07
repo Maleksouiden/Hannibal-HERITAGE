@@ -45,7 +45,7 @@ async function fromDatabase(
 ): Promise<CatalogProduct[] | null> {
   try {
     const rows = await prisma.product.findMany({
-      where: { catalog, isPublished: true },
+      where: { catalog, isPublished: true, isArchived: false },
       include: { images: { orderBy: { sortOrder: "asc" } } },
       orderBy: { name: "asc" },
     });
@@ -92,7 +92,7 @@ export async function getCatalogProduct(
   if (await databaseAvailable()) {
     try {
       const row = await prisma.product.findFirst({
-        where: { catalog, slug, isPublished: true },
+        where: { catalog, slug, isPublished: true, isArchived: false },
         include: { images: { orderBy: { sortOrder: "asc" } } },
       });
       if (row) {

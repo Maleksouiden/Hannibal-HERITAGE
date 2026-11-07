@@ -56,6 +56,10 @@ next-env.d.ts
 # local stub order persistence (SCRUM-13) until Prisma/MySQL
 /data/orders.json
 
+# admin product image uploads (SCRUM-63)
+/public/uploads/**
+!/public/uploads/.gitkeep
+
 # PyInstaller work dirs (keep setup/dist/setup.exe committed if built)
 /setup/build/
 /setup/*.spec
