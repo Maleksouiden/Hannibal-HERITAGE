@@ -8,6 +8,7 @@ import {
   getCurrencyRates,
 } from "@/lib/currency-server";
 import { resolveUnitPriceMinorAsync } from "@/lib/catalog-lookup";
+import { isSellable } from "@/lib/inventory";
 
 export type OrderStatus = "PENDING_PAYMENT" | "PAID_STUB" | "CANCELLED";
 
@@ -110,6 +111,24 @@ export async function createOrder(
     const resolved = await resolveUnitPriceMinorAsync(line.catalog, line.slug);
     if (!resolved) {
       throw new Error(`Unknown product ${line.catalog}/${line.slug}`);
+    }
+    const inventory = resolved.product as {
+      stock?: number;
+      vendingEnabled?: boolean;
+    };
+    const stock = inventory.stock ?? 10;
+    const vendingEnabled = inventory.vendingEnabled ?? true;
+    if (!isSellable({ stock, vendingEnabled })) {
+      throw new Error(
+        vendingEnabled
+          ? `${resolved.product.name} is out of stock`
+          : `${resolved.product.name} is not available for sale`,
+      );
+    }
+    if (qty > stock) {
+      throw new Error(
+        `Only ${stock} in stock for ${resolved.product.name}`,
+      );
     }
     const lineTotal = resolved.priceMinor * qty;
     subtotalMinorTnd += lineTotal;

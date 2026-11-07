@@ -11,16 +11,20 @@ import { productPriceMinor } from "@/lib/product-display";
 export type CatalogProduct = SeedProduct & {
   images: string[];
   source: "database" | "static";
+  stock: number;
+  vendingEnabled: boolean;
+  lowStockThreshold: number;
 };
 
-function fromStatic(
-  product: SeedProduct,
-): CatalogProduct {
+function fromStatic(product: SeedProduct): CatalogProduct {
   return {
     ...product,
     priceMinor: productPriceMinor(product),
     images: PRODUCT_GALLERIES[product.slug] ?? [product.imageSrc],
     source: "static",
+    stock: 10,
+    vendingEnabled: true,
+    lowStockThreshold: 3,
   };
 }
 
@@ -40,6 +44,37 @@ async function databaseAvailable(): Promise<boolean> {
   }
 }
 
+function mapDbRow(row: {
+  slug: string;
+  name: string;
+  description: string | null;
+  catalog: CatalogId;
+  priceMinor: number;
+  stock: number;
+  vendingEnabled: boolean;
+  lowStockThreshold: number;
+  images: Array<{ url: string; alt: string | null }>;
+}): CatalogProduct {
+  const images =
+    row.images.length > 0 ? row.images.map((image) => image.url) : ["/file.svg"];
+  return {
+    slug: row.slug,
+    name: row.name,
+    description: row.description ?? "",
+    catalog: row.catalog,
+    priceMinor: row.priceMinor,
+    currency: "TND",
+    isPublished: true as const,
+    imageSrc: images[0]!,
+    imageAlt: row.images[0]?.alt ?? row.name,
+    images,
+    source: "database",
+    stock: row.stock,
+    vendingEnabled: row.vendingEnabled,
+    lowStockThreshold: row.lowStockThreshold,
+  };
+}
+
 async function fromDatabase(
   catalog: CatalogId,
 ): Promise<CatalogProduct[] | null> {
@@ -50,25 +85,7 @@ async function fromDatabase(
       orderBy: { name: "asc" },
     });
     if (rows.length === 0) return null;
-    return rows.map((row) => {
-      const images =
-        row.images.length > 0
-          ? row.images.map((image) => image.url)
-          : ["/file.svg"];
-      return {
-        slug: row.slug,
-        name: row.name,
-        description: row.description ?? "",
-        catalog: row.catalog,
-        priceMinor: row.priceMinor,
-        currency: "TND",
-        isPublished: true as const,
-        imageSrc: images[0]!,
-        imageAlt: row.images[0]?.alt ?? row.name,
-        images,
-        source: "database" as const,
-      };
-    });
+    return rows.map(mapDbRow);
   } catch {
     return null;
   }
@@ -95,25 +112,7 @@ export async function getCatalogProduct(
         where: { catalog, slug, isPublished: true, isArchived: false },
         include: { images: { orderBy: { sortOrder: "asc" } } },
       });
-      if (row) {
-        const images =
-          row.images.length > 0
-            ? row.images.map((image) => image.url)
-            : ["/file.svg"];
-        return {
-          slug: row.slug,
-          name: row.name,
-          description: row.description ?? "",
-          catalog: row.catalog,
-          priceMinor: row.priceMinor,
-          currency: "TND",
-          isPublished: true,
-          imageSrc: images[0]!,
-          imageAlt: row.images[0]?.alt ?? row.name,
-          images,
-          source: "database",
-        };
-      }
+      if (row) return mapDbRow(row);
     } catch {
       /* fall through to static */
     }

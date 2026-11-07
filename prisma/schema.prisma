@@ -68,6 +68,10 @@ model Product {
   currency    CurrencyCode @default(TND)
   sku         String?  @unique
   stock       Int      @default(0)
+  /// When false, product is not sellable even if in stock / published.
+  vendingEnabled Boolean @default(true)
+  /// Stock at or below this (and > 0) is flagged low-stock in admin.
+  lowStockThreshold Int @default(3)
   isPublished Boolean  @default(false)
   isArchived  Boolean  @default(false)
   images      ProductImage[]

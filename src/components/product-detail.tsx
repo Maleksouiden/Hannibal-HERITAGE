@@ -3,9 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import type { SeedProduct } from "@/data/sajnen-products";
 import { DisplayPrice } from "@/components/display-price";
 import { addToCart } from "@/lib/cart-store";
+import type { CatalogProduct } from "@/lib/catalog-repository";
+import {
+  isLowStock,
+  isOutOfStock,
+  isSellable,
+  sellabilityLabel,
+} from "@/lib/inventory";
 import {
   catalogHref,
   catalogLabel,
@@ -14,7 +20,7 @@ import {
 } from "@/lib/product-display";
 
 type ProductDetailProps = {
-  product: SeedProduct;
+  product: CatalogProduct;
 };
 
 export function ProductDetail({ product }: ProductDetailProps) {
@@ -24,8 +30,11 @@ export function ProductDetail({ product }: ProductDetailProps) {
   const priceMinor = productPriceMinor(product);
   const label = catalogLabel(product.catalog);
   const backHref = catalogHref(product.catalog);
+  const sellable = isSellable(product);
+  const status = sellabilityLabel(product);
 
   function handleAdd() {
+    if (!sellable) return;
     addToCart({
       slug: product.slug,
       catalog: product.catalog,
@@ -90,6 +99,18 @@ export function ProductDetail({ product }: ProductDetailProps) {
           sourceCurrency={product.currency}
           className="text-xl tracking-tight text-[#1c1917] sm:text-2xl"
         />
+        <p
+          className={`text-xs tracking-[0.14em] uppercase ${
+            sellable
+              ? isLowStock(product)
+                ? "text-amber-800"
+                : "text-[#5c564e]"
+              : "text-red-900"
+          }`}
+        >
+          {status}
+          {sellable ? ` · ${product.stock} available` : null}
+        </p>
         <p className="max-w-md text-sm leading-6 text-[#5c564e] sm:text-base sm:leading-7">
           {product.description}
         </p>
@@ -97,9 +118,16 @@ export function ProductDetail({ product }: ProductDetailProps) {
           <button
             type="button"
             onClick={handleAdd}
-            className="inline-flex min-h-11 w-full items-center justify-center border border-[#1c1917] bg-[#1c1917] px-6 py-3 text-xs tracking-[0.16em] text-[#f7f3ec] uppercase transition hover:bg-transparent hover:text-[#1c1917] sm:w-auto"
+            disabled={!sellable}
+            className="inline-flex min-h-11 w-full items-center justify-center border border-[#1c1917] bg-[#1c1917] px-6 py-3 text-xs tracking-[0.16em] text-[#f7f3ec] uppercase transition hover:bg-transparent hover:text-[#1c1917] disabled:cursor-not-allowed disabled:border-[#c4b8a5] disabled:bg-[#c4b8a5] disabled:text-[#f7f3ec] sm:w-auto"
           >
-            {added ? "Added to panier" : "Add to panier"}
+            {!sellable
+              ? isOutOfStock(product)
+                ? "Out of stock"
+                : "Unavailable"
+              : added
+                ? "Added to panier"
+                : "Add to panier"}
           </button>
           <Link
             href="/panier"

@@ -81,7 +81,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ order }, { status: 201 });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Order failed";
-    const status = message.includes("Unknown product") ? 400 : 503;
+    const status =
+      message.includes("Unknown product") ||
+      message.includes("out of stock") ||
+      message.includes("not available") ||
+      message.includes("Only ") ||
+      message.includes("Invalid quantity")
+        ? 400
+        : 503;
     return NextResponse.json({ error: message }, { status });
   }
 }
