@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useState } from "react";
+import { useId, useState, useSyncExternalStore } from "react";
+import { getCartCount, subscribeCart } from "@/lib/cart-store";
 
 const NAV_ITEMS = [
   { href: "/", label: "Accueil" },
@@ -22,6 +23,11 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [currency, setCurrency] = useState<(typeof CURRENCIES)[number]>("TND");
   const menuId = useId();
+  const cartCount = useSyncExternalStore(
+    subscribeCart,
+    getCartCount,
+    () => 0,
+  );
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#ddd4c5]/60 bg-[#f7f3ec]/95 backdrop-blur-md">
@@ -75,7 +81,9 @@ export function SiteHeader() {
             aria-label="Panier"
           >
             Panier
-            <span className="ml-1 tabular-nums text-[#8a8278]">(0)</span>
+            <span className="ml-1 tabular-nums text-[#8a8278]">
+              ({cartCount})
+            </span>
           </Link>
         </div>
       </div>
