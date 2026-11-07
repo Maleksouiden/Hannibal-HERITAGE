@@ -26,7 +26,11 @@ export async function generateMetadata({
 
 export default async function OliveWoodProductPage({ params }: PageProps) {
   const { slug } = await params;
-  const product = await getCatalogProduct("OLIVE_WOOD", slug);
+  const [product, catalog] = await Promise.all([
+    getCatalogProduct("OLIVE_WOOD", slug),
+    listCatalogProducts("OLIVE_WOOD"),
+  ]);
   if (!product) notFound();
-  return <ProductDetail product={product} />;
+  const related = catalog.filter((item) => item.slug !== slug).slice(0, 8);
+  return <ProductDetail product={product} related={related} />;
 }

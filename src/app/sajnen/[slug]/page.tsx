@@ -26,7 +26,11 @@ export async function generateMetadata({
 
 export default async function SajnenProductPage({ params }: PageProps) {
   const { slug } = await params;
-  const product = await getCatalogProduct("SAJNEN", slug);
+  const [product, catalog] = await Promise.all([
+    getCatalogProduct("SAJNEN", slug),
+    listCatalogProducts("SAJNEN"),
+  ]);
   if (!product) notFound();
-  return <ProductDetail product={product} />;
+  const related = catalog.filter((item) => item.slug !== slug).slice(0, 8);
+  return <ProductDetail product={product} related={related} />;
 }
