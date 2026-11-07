@@ -5,7 +5,7 @@ import { useId, useState } from "react";
 
 const NAV_ITEMS = [
   { href: "/", label: "Accueil" },
-  { href: "#sajnen", label: "Sajnen" },
+  { href: "/sajnen", label: "Sejnane" },
   { href: "#olive-wood", label: "Olive wood" },
   { href: "#a-propos", label: "À propos" },
 ] as const;

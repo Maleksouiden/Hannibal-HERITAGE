@@ -21,7 +21,7 @@ export const HOME_TEMPLATES: HomeTemplate[] = [
     title: "Timeless Artistry, Handcrafted by Women of Sejnane",
     body: "Discover the beauty of authentic Tunisian pottery, shaped by skilled women artisans and rooted in a centuries-old tradition recognized by UNESCO as Intangible Cultural Heritage.",
     ctaLabel: "Explore Sejnane",
-    href: "#sajnen",
+    href: "/sajnen",
     imageSrc: "/home/sajnen-featured.png",
     imageAlt: "Handcrafted Sejnane terracotta vessel",
   },
