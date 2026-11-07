@@ -1,33 +1,23 @@
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col bg-[#f7f3ec] text-[#1c1917]">
-      <header className="sticky top-0 z-10 border-b border-[#ddd4c5]/30 bg-[#f7f3ec]/90 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
-          <span className="text-sm tracking-[0.12em] uppercase text-[#6b645a]">
-            Menu
-          </span>
-          <p className="text-center font-semibold tracking-[0.18em] uppercase">
-            Hannibal HERITAGE
-          </p>
-          <span className="text-sm tracking-[0.12em] uppercase text-[#6b645a]">
-            Cart · TND
-          </span>
-        </div>
-      </header>
-
-      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center gap-6 px-6 py-20">
-        <h1 className="max-w-xl text-4xl font-semibold tracking-tight sm:text-5xl">
+    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-16 sm:px-6 sm:py-20">
+      <section className="flex max-w-xl flex-col gap-5">
+        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
           Hannibal HERITAGE
         </h1>
-        <p className="max-w-lg text-lg leading-8 text-[#5c564e]">
-          Scaffold ready. Next.js + Prisma + MySQL. Catalogs for Sajnen and
-          olive wood come next.
+        <p className="text-lg leading-8 text-[#5c564e]">
+          Home layout shell is ready for later templates. Catalogs for Sajnen
+          and olive wood come in following stories.
         </p>
-        <p className="text-sm text-[#7a7368]">
-          See <code className="font-mono">README.md</code> for install, MySQL,
-          and Prisma commands.
-        </p>
-      </main>
-    </div>
+      </section>
+
+      {/* Tall placeholder so sticky header can be verified on scroll */}
+      <section
+        aria-hidden
+        className="mt-24 min-h-[120vh] border-t border-[#ddd4c5]/50 pt-10 text-sm text-[#8a8278]"
+      >
+        Scroll to confirm the brand header stays sticky.
+      </section>
+    </main>
   );
 }
