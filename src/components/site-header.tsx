@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { useId, useState, useSyncExternalStore } from "react";
+import { CURRENCY_CODES, type CurrencyCode } from "@/lib/currency-codes";
+import {
+  getSelectedCurrency,
+  setSelectedCurrency,
+  subscribeCurrency,
+} from "@/lib/currency-preference";
 import { getCartCount, subscribeCart } from "@/lib/cart-store";
+import { useCurrencyRates } from "@/lib/currency-rates-client";
 
 const NAV_ITEMS = [
   { href: "/", label: "Accueil" },
@@ -10,8 +17,6 @@ const NAV_ITEMS = [
   { href: "/olive-wood", label: "Olive wood" },
   { href: "#a-propos", label: "À propos" },
 ] as const;
-
-const CURRENCIES = ["TND", "EUR", "USD"] as const;
 
 /**
  * Sticky brand header for Hannibal HERITAGE (SCRUM-6).
@@ -21,13 +26,21 @@ const CURRENCIES = ["TND", "EUR", "USD"] as const;
  */
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [currency, setCurrency] = useState<(typeof CURRENCIES)[number]>("TND");
   const menuId = useId();
   const cartCount = useSyncExternalStore(
     subscribeCart,
     getCartCount,
     () => 0,
   );
+  const currency = useSyncExternalStore(
+    subscribeCurrency,
+    getSelectedCurrency,
+    () => "TND" as CurrencyCode,
+  );
+  const rates = useCurrencyRates();
+  const available = rates
+    ? CURRENCY_CODES.filter((code) => code in rates.rates)
+    : [...CURRENCY_CODES];
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#ddd4c5]/60 bg-[#f7f3ec]/95 backdrop-blur-md">
@@ -62,12 +75,12 @@ export function SiteHeader() {
             <select
               value={currency}
               onChange={(event) =>
-                setCurrency(event.target.value as (typeof CURRENCIES)[number])
+                setSelectedCurrency(event.target.value as CurrencyCode)
               }
               className="cursor-pointer border-0 bg-transparent py-1 pr-1 text-xs tracking-[0.12em] uppercase text-[#5c564e] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
               aria-label="Currency"
             >
-              {CURRENCIES.map((code) => (
+              {available.map((code) => (
                 <option key={code} value={code}>
                   {code}
                 </option>

@@ -12,11 +12,8 @@ import {
   subscribeCart,
   type CartLine,
 } from "@/lib/cart-store";
-import {
-  catalogHref,
-  catalogLabel,
-  formatProductPrice,
-} from "@/lib/product-display";
+import { DisplayPrice } from "@/components/display-price";
+import { catalogHref, catalogLabel } from "@/lib/product-display";
 
 function productHref(line: CartLine): string {
   return `${catalogHref(line.catalog)}/${line.slug}`;
@@ -82,9 +79,11 @@ export function CartView() {
               >
                 {line.name}
               </Link>
-              <p className="text-sm text-[#5c564e]">
-                {formatProductPrice(line.priceMinor, line.currency)}
-              </p>
+              <DisplayPrice
+                priceMinor={line.priceMinor}
+                sourceCurrency={line.currency}
+                className="text-sm text-[#5c564e]"
+              />
 
               <div className="mt-2 flex flex-wrap items-center gap-3">
                 <label className="flex items-center gap-2 text-xs tracking-[0.12em] text-[#5c564e] uppercase">
@@ -113,20 +112,18 @@ export function CartView() {
                 </button>
               </div>
 
-              <p className="text-sm tabular-nums text-[#1c1917] sm:hidden">
-                {formatProductPrice(
-                  line.priceMinor * line.quantity,
-                  line.currency,
-                )}
-              </p>
+              <DisplayPrice
+                priceMinor={line.priceMinor * line.quantity}
+                sourceCurrency={line.currency}
+                className="text-sm tabular-nums text-[#1c1917] sm:hidden"
+              />
             </div>
 
-            <p className="hidden text-right text-sm tabular-nums text-[#1c1917] sm:block">
-              {formatProductPrice(
-                line.priceMinor * line.quantity,
-                line.currency,
-              )}
-            </p>
+            <DisplayPrice
+              priceMinor={line.priceMinor * line.quantity}
+              sourceCurrency={line.currency}
+              className="hidden text-right text-sm tabular-nums text-[#1c1917] sm:block"
+            />
           </li>
         ))}
       </ul>
@@ -136,12 +133,15 @@ export function CartView() {
           <span className="text-xs tracking-[0.16em] text-[#5c564e] uppercase">
             Subtotal
           </span>
-          <span className="text-lg tabular-nums text-[#1c1917]">
-            {formatProductPrice(subtotalMinor, "TND")}
-          </span>
+          <DisplayPrice
+            priceMinor={subtotalMinor}
+            sourceCurrency="TND"
+            className="text-lg tabular-nums text-[#1c1917]"
+          />
         </div>
         <p className="text-sm leading-6 text-[#8a8278]">
-          Prices shown in TND. Checkout arrives in a later story.
+          Display currency converts for viewing only; stored prices stay in TND.
+          Checkout arrives in a later story.
         </p>
         <button
           type="button"

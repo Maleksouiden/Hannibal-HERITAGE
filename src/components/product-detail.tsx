@@ -4,11 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import type { SeedProduct } from "@/data/sajnen-products";
+import { DisplayPrice } from "@/components/display-price";
 import { addToCart } from "@/lib/cart-store";
 import {
   catalogHref,
   catalogLabel,
-  formatProductPrice,
   productImages,
   productPriceMinor,
 } from "@/lib/product-display";
@@ -22,7 +22,6 @@ export function ProductDetail({ product }: ProductDetailProps) {
   const [active, setActive] = useState(0);
   const [added, setAdded] = useState(false);
   const priceMinor = productPriceMinor(product);
-  const priceLabel = formatProductPrice(priceMinor, product.currency);
   const label = catalogLabel(product.catalog);
   const backHref = catalogHref(product.catalog);
 
@@ -86,7 +85,11 @@ export function ProductDetail({ product }: ProductDetailProps) {
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           {product.name}
         </h1>
-        <p className="text-2xl tracking-tight text-[#1c1917]">{priceLabel}</p>
+        <DisplayPrice
+          priceMinor={priceMinor}
+          sourceCurrency={product.currency}
+          className="text-2xl tracking-tight text-[#1c1917]"
+        />
         <p className="max-w-md text-base leading-7 text-[#5c564e]">
           {product.description}
         </p>

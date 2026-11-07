@@ -1,6 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import type { SeedProduct } from "@/data/sajnen-products";
+import { DisplayPrice } from "@/components/display-price";
+import { productPriceMinor } from "@/lib/product-display";
 
 type ProductCardProps = {
   product: SeedProduct;
@@ -8,6 +12,8 @@ type ProductCardProps = {
 };
 
 export function ProductCard({ product, href }: ProductCardProps) {
+  const priceMinor = productPriceMinor(product);
+
   return (
     <Link
       href={href}
@@ -25,6 +31,11 @@ export function ProductCard({ product, href }: ProductCardProps) {
       <h2 className="text-sm tracking-[0.04em] text-[#3f3a34] transition group-hover:text-[#1c1917]">
         {product.name}
       </h2>
+      <DisplayPrice
+        priceMinor={priceMinor}
+        sourceCurrency={product.currency}
+        className="text-sm tabular-nums text-[#5c564e]"
+      />
     </Link>
   );
 }
