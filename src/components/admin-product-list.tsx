@@ -27,16 +27,22 @@ function catalogLabel(catalog: AdminProductListItem["catalog"]) {
 export function AdminProductList({ products }: AdminProductListProps) {
   const router = useRouter();
   const [showArchived, setShowArchived] = useState(false);
+  const [query, setQuery] = useState("");
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const visible = useMemo(
-    () =>
-      products.filter((product) =>
-        showArchived ? true : !product.isArchived,
-      ),
-    [products, showArchived],
-  );
+  const visible = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return products.filter((product) => {
+      if (!showArchived && product.isArchived) return false;
+      if (!q) return true;
+      return (
+        product.name.toLowerCase().includes(q) ||
+        product.slug.toLowerCase().includes(q) ||
+        catalogLabel(product.catalog).toLowerCase().includes(q)
+      );
+    });
+  }, [products, showArchived, query]);
 
   async function archive(id: string) {
     if (!window.confirm("Archive this product?")) return;
@@ -61,25 +67,41 @@ export function AdminProductList({ products }: AdminProductListProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <label className="flex min-h-11 items-center gap-2 text-sm text-[#5c564e]">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+        <label className="flex min-w-[min(100%,18rem)] flex-1 flex-col gap-2 text-[11px] tracking-[0.14em] text-[#6f675c] uppercase">
+          Search articles
           <input
-            type="checkbox"
-            checked={showArchived}
-            onChange={(event) => setShowArchived(event.target.checked)}
-            className="size-4"
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Name, slug, or catalog…"
+            className="min-h-11 border border-[#ddd4c5] bg-transparent px-3 text-sm tracking-normal text-[#1c1917] normal-case outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
           />
-          Show archived
         </label>
-        <Link
-          href="/dashboard/products/new"
-          className="inline-flex min-h-11 items-center border border-[#1c1917] bg-[#1c1917] px-4 text-xs tracking-[0.16em] text-[#f7f3ec] uppercase"
-        >
-          New product
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <label className="flex min-h-11 items-center gap-2 text-sm text-[#5c564e]">
+            <input
+              type="checkbox"
+              checked={showArchived}
+              onChange={(event) => setShowArchived(event.target.checked)}
+              className="size-4"
+            />
+            Show archived
+          </label>
+          <Link
+            href="/dashboard/products/new"
+            className="inline-flex min-h-11 items-center border border-[#1c1917] bg-[#1c1917] px-4 text-xs tracking-[0.16em] text-[#f7f3ec] uppercase"
+          >
+            New product
+          </Link>
+        </div>
       </div>
 
       {error ? <p className="text-sm text-red-800">{error}</p> : null}
+
+      <p className="text-xs text-[#8a8278]">
+        {visible.length} article{visible.length === 1 ? "" : "s"}
+      </p>
 
       {visible.length === 0 ? (
         <p className="text-sm text-[#5c564e]">No products in this view.</p>

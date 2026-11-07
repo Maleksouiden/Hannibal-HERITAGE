@@ -89,6 +89,24 @@ export async function getOrderById(id: string): Promise<OrderRecord | null> {
   return orders.find((order) => order.id === id) ?? null;
 }
 
+/** Newest first — file-backed checkout store. */
+export async function listOrders(): Promise<OrderRecord[]> {
+  const orders = await readOrders();
+  return [...orders].sort(
+    (a, b) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
+}
+
+export async function listOrdersByEmail(
+  email: string,
+): Promise<OrderRecord[]> {
+  const needle = email.trim().toLowerCase();
+  if (!needle) return [];
+  const orders = await listOrders();
+  return orders.filter((order) => order.email.toLowerCase() === needle);
+}
+
 /**
  * Server-side order create: reprice from catalog seed, convert totals via Frankfurter cache.
  * File-backed today; shape matches Prisma Order/OrderItem for SCRUM-14/66 migration.
