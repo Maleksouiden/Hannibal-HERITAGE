@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hannibal HERITAGE
 
-## Getting Started
+Artisan e-commerce scaffold for **Hannibal HERITAGE** (Sajnen + olive wood catalogs later).
 
-First, run the development server:
+Stack: **Next.js (App Router) + TypeScript + Tailwind CSS + Prisma + MySQL**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Prerequisites
+
+- Node.js 20+ (tested with Node 24)
+- npm
+- MySQL 8+ (or MariaDB 10.11+) running locally on Windows
+
+## Install
+
+```powershell
+cd C:\Users\CC\Documents\GitHub\Hannibal
+npm install
+copy .env.example .env
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Edit `.env` with your MySQL user, password, and database name.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## MySQL on Windows
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Install [MySQL Community Server](https://dev.mysql.com/downloads/mysql/) **or** [MariaDB](https://mariadb.org/download/) (XAMPP/WAMP also work if MySQL is enabled).
+2. During setup, note the root password (or create a dedicated user).
+3. Start the MySQL service (Services → `MySQL80` / `MariaDB`, or MySQL Installer → Start).
+4. Create the app database:
 
-## Learn More
+```sql
+CREATE DATABASE hannibal_heritage CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
 
-To learn more about Next.js, take a look at the following resources:
+Optional dedicated user:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```sql
+CREATE USER 'hannibal'@'localhost' IDENTIFIED BY 'your-strong-password';
+GRANT ALL PRIVILEGES ON hannibal_heritage.* TO 'hannibal'@'localhost';
+FLUSH PRIVILEGES;
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. Put those values in `.env` (`DATABASE_URL` plus the `DATABASE_*` fields).
 
-## Deploy on Vercel
+Default port is `3306`. Confirm with:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```powershell
+mysql -u root -p -e "SHOW DATABASES;"
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Prisma
+
+Generate the client (no live DB required):
+
+```powershell
+npm run db:generate
+```
+
+After MySQL is up and `.env` is filled:
+
+```powershell
+npm run db:migrate
+```
+
+Useful commands:
+
+| Script | Purpose |
+| --- | --- |
+| `npm run db:generate` | Generate Prisma Client |
+| `npm run db:migrate` | Create/apply migrations (`prisma migrate dev`) |
+| `npm run db:push` | Push schema without migration files |
+| `npm run db:studio` | Open Prisma Studio |
+
+Starter models: `Category`, `Product`, `ProductImage`, with `Catalog` enum (`SAJNEN`, `OLIVE_WOOD`).
+
+## Run the app
+
+```powershell
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+## Project notes
+
+- Brand: Hannibal HERITAGE
+- Planned UI: sticky centered logo, left menu, cart, currency
+- Inspiration: artisancollection.com
+- This repo is a **scaffold only** — full shop UI/catalog is not built yet
+
+## Scripts
+
+| Script | Purpose |
+| --- | --- |
+| `npm run dev` | Next.js dev server |
+| `npm run build` | Production build |
+| `npm run start` | Production server |
+| `npm run lint` | ESLint |

@@ -1,0 +1,73 @@
+// Hannibal HERITAGE — artisan e-commerce starter schema
+// Catalogs planned: Sajnen + olive wood
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum Catalog {
+  SAJNEN
+  OLIVE_WOOD
+}
+
+enum CurrencyCode {
+  TND
+  EUR
+  USD
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  description String?   @db.Text
+  catalog     Catalog
+  parentId    String?
+  parent      Category? @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children    Category[] @relation("CategoryTree")
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([catalog])
+  @@index([parentId])
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?  @db.Text
+  catalog     Catalog
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  /// Price stored in minor units (e.g. millimes / cents)
+  priceMinor  Int
+  currency    CurrencyCode @default(TND)
+  sku         String?  @unique
+  stock       Int      @default(0)
+  isPublished Boolean  @default(false)
+  images      ProductImage[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([catalog])
+  @@index([categoryId])
+  @@index([isPublished])
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String  @db.VarChar(2048)
+  alt       String?
+  sortOrder Int     @default(0)
+
+  @@index([productId])
+}
