@@ -55,3 +55,7 @@ next-env.d.ts
 
 # local stub order persistence (SCRUM-13) until Prisma/MySQL
 /data/orders.json
+
+# PyInstaller work dirs (keep setup/dist/setup.exe committed if built)
+/setup/build/
+/setup/*.spec
