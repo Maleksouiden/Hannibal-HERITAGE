@@ -99,6 +99,15 @@ export function SiteHeader() {
             </select>
           </label>
 
+          {user?.role === "ADMIN" ? (
+            <Link
+              href="/dashboard"
+              className="hidden min-h-11 items-center px-1 text-[11px] tracking-[0.1em] text-[#5c564e] uppercase transition hover:text-[#1c1917] sm:inline-flex sm:text-xs sm:tracking-[0.14em]"
+            >
+              Dashboard
+            </Link>
+          ) : null}
+
           {user ? (
             <button
               type="button"
@@ -147,6 +156,17 @@ export function SiteHeader() {
               </Link>
             </li>
           ))}
+          {user?.role === "ADMIN" ? (
+            <li>
+              <Link
+                href="/dashboard"
+                className="flex min-h-11 items-center py-2 text-sm tracking-[0.08em] text-[#3f3a34] transition hover:text-[#1c1917]"
+                onClick={() => setMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
+            </li>
+          ) : null}
           {user ? (
             <li>
               <button

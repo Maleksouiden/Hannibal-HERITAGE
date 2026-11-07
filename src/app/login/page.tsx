@@ -6,7 +6,17 @@ export const metadata: Metadata = {
   description: "Sign in to your Hannibal HERITAGE account.",
 };
 
-export default function LoginPage() {
+type PageProps = {
+  searchParams: Promise<{ next?: string }>;
+};
+
+export default async function LoginPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const nextPath =
+    params.next && params.next.startsWith("/") && !params.next.startsWith("//")
+      ? params.next
+      : undefined;
+
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-16">
       <header className="mb-8 max-w-md sm:mb-10">
@@ -21,7 +31,7 @@ export default function LoginPage() {
           account.
         </p>
       </header>
-      <AuthForm mode="login" />
+      <AuthForm mode="login" nextPath={nextPath} />
     </main>
   );
 }

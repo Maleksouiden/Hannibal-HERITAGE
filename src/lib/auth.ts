@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
@@ -127,6 +128,20 @@ export async function requireAdmin(): Promise<
     };
   }
   return result;
+}
+
+/** Server pages under /dashboard — redirect guests and non-admins. */
+export async function requireAdminPage(
+  nextPath = "/dashboard",
+): Promise<SessionUser> {
+  const user = await getSessionUser();
+  if (!user) {
+    redirect(`/login?next=${encodeURIComponent(nextPath)}`);
+  }
+  if (user.role !== "ADMIN") {
+    redirect("/");
+  }
+  return user;
 }
 
 export function publicUser(user: SessionUser) {

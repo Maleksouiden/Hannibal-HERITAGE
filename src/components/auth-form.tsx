@@ -8,9 +8,15 @@ type Mode = "login" | "signup";
 
 type AuthFormProps = {
   mode: Mode;
+  nextPath?: string;
 };
 
-export function AuthForm({ mode }: AuthFormProps) {
+function safeNextPath(raw: string | undefined): string {
+  if (!raw || !raw.startsWith("/") || raw.startsWith("//")) return "/";
+  return raw;
+}
+
+export function AuthForm({ mode, nextPath }: AuthFormProps) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,11 +44,21 @@ export function AuthForm({ mode }: AuthFormProps) {
           body: JSON.stringify(payload),
         },
       );
-      const data = (await response.json()) as { error?: string };
+      const data = (await response.json()) as {
+        error?: string;
+        user?: { role?: string };
+      };
       if (!response.ok) {
         throw new Error(data.error ?? "Authentication failed");
       }
-      router.push("/");
+      const next = safeNextPath(nextPath);
+      const destination =
+        next !== "/"
+          ? next
+          : data.user?.role === "ADMIN"
+            ? "/dashboard"
+            : "/";
+      router.push(destination);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Authentication failed");
