@@ -18,7 +18,7 @@ const NAV_ITEMS = [
   { href: "/", label: "Accueil", flag: "showAccueil" },
   { href: "/sajnen", label: "Sejnane", flag: "showSajnen" },
   { href: "/olive-wood", label: "Olive wood", flag: "showOliveWood" },
-  { href: "#a-propos", label: "À propos", flag: "showAPropos" },
+  { href: "/a-propos", label: "À propos", flag: "showAPropos" },
 ] as const satisfies ReadonlyArray<{
   href: string;
   label: string;

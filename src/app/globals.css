@@ -32,3 +32,12 @@ body {
     touch-action: manipulation;
   }
 }
+
+@keyframes about-ken {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.06);
+  }
+}
