@@ -71,3 +71,51 @@ model ProductImage {
 
   @@index([productId])
 }
+
+/// Checkout / invoicing (SCRUM-13+). File store used until MySQL migrate.
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID_STUB
+  CANCELLED
+}
+
+model Order {
+  id                 String      @id @default(cuid())
+  orderNumber        String      @unique
+  status             OrderStatus @default(PENDING_PAYMENT)
+  email              String
+  fullName           String
+  phone              String?
+  shippingLine1      String
+  shippingLine2      String?
+  shippingCity       String
+  shippingPostalCode String
+  shippingCountry    String
+  /// Catalog totals always stored in TND minor units
+  subtotalMinorTnd   Int
+  /// Display currency chosen at checkout (server-converted)
+  displayCurrency    String      @db.VarChar(3)
+  subtotalDisplay    Float
+  paymentStatus      String      @default("stub_pending")
+  items              OrderItem[]
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  @@index([email])
+  @@index([status])
+}
+
+model OrderItem {
+  id               String  @id @default(cuid())
+  orderId          String
+  order            Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  catalog          Catalog
+  slug             String
+  name             String
+  quantity         Int
+  unitPriceMinorTnd Int
+  lineTotalMinorTnd Int
+
+  @@index([orderId])
+  @@index([catalog, slug])
+}

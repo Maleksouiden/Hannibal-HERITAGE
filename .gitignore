@@ -52,3 +52,6 @@ AGENTS.md
 next-env.d.ts
 
 /src/generated/prisma
+
+# local stub order persistence (SCRUM-13) until Prisma/MySQL
+/data/orders.json

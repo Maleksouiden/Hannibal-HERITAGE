@@ -126,3 +126,10 @@ export function getCartSubtotalMinor(): number {
 export function cartLineId(line: CartLine): string {
   return lineKey(line.catalog, line.slug);
 }
+
+export function clearCart(): void {
+  ensureHydrated();
+  lines = [];
+  writeStorage(lines);
+  emit();
+}

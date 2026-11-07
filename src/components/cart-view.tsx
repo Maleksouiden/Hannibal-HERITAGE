@@ -141,15 +141,13 @@ export function CartView() {
         </div>
         <p className="text-sm leading-6 text-[#8a8278]">
           Display currency converts for viewing only; stored prices stay in TND.
-          Checkout arrives in a later story.
         </p>
-        <button
-          type="button"
-          disabled
-          className="border border-[#ddd4c5] px-5 py-3 text-xs tracking-[0.16em] text-[#8a8278] uppercase"
+        <Link
+          href="/checkout"
+          className="inline-flex items-center justify-center border border-[#1c1917] bg-[#1c1917] px-5 py-3 text-center text-xs tracking-[0.16em] text-[#f7f3ec] uppercase transition hover:bg-transparent hover:text-[#1c1917]"
         >
-          Checkout soon
-        </button>
+          Checkout
+        </Link>
       </aside>
     </div>
   );
