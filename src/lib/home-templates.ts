@@ -31,7 +31,7 @@ export const HOME_TEMPLATES: HomeTemplate[] = [
     title: "Rooted in Nature, Shaped by Tradition",
     body: "Discover the heart of Tunisia’s ancient olive groves, where natural beauty meets exceptional craftsmanship. Each piece is carefully handcrafted from natural olive wood, bringing Mediterranean warmth and timeless elegance into your home.",
     ctaLabel: "Explore Olive Wood",
-    href: "#olive-wood",
+    href: "/olive-wood",
     imageSrc: "/home/olive-wood-featured.png",
     imageAlt: "Handcrafted olive wood serving board",
   },
