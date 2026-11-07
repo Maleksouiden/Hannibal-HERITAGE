@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   useEffect,
   useId,
@@ -42,13 +42,16 @@ const DEFAULT_MENU: SiteMenuFlags = {
 /**
  * Luxury storefront chrome inspired by Artisans Collection layout:
  * Menu | brand | Compte · Cart · Wishlist · Search · currency
+ * Transparent until scroll, then solid cream bar.
  */
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [menuFlags, setMenuFlags] = useState<SiteMenuFlags>(DEFAULT_MENU);
   const menuId = useId();
   const searchId = useId();
+  const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuthUser();
   const cartCount = useSyncExternalStore(
@@ -65,6 +68,24 @@ export function SiteHeader() {
   const available = rates
     ? CURRENCY_CODES.filter((code) => code in rates.rates)
     : [...CURRENCY_CODES];
+
+  const onHome = pathname === "/";
+  const panelOpen = menuOpen || searchOpen;
+  const solid = scrolled || panelOpen;
+  /** Light chrome only while overlaying the dark home hero. */
+  const lightChrome = onHome && !solid;
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    setMenuOpen(false);
+    setSearchOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     let cancelled = false;
@@ -111,13 +132,28 @@ export function SiteHeader() {
     router.push("/sajnen");
   }
 
+  const ink = lightChrome
+    ? "text-[#f7f3ec]/90 hover:text-[#f7f3ec]"
+    : "text-[#5c564e] hover:text-[#1c1917]";
+  const inkStrong = lightChrome ? "text-[#f7f3ec]" : "text-[#1c1917]";
+  const inkMuted = lightChrome ? "text-[#e8dfd0]/75" : "text-[#8a8278]";
+  const menuInk = lightChrome
+    ? "text-[#f7f3ec]/90 hover:text-[#f7f3ec]"
+    : "text-[#3f3a34] hover:text-[#1c1917]";
+
   return (
-    <header className="sticky top-0 z-50 border-b border-[#e4dccf] bg-[#f7f3ec]/96 pt-[env(safe-area-inset-top,0px)] backdrop-blur-md">
+    <header
+      className={`fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top,0px)] transition-[background-color,border-color,backdrop-filter,box-shadow] duration-300 ${
+        solid
+          ? "border-b border-[#e4dccf] bg-[#f7f3ec]/96 shadow-[0_1px_0_rgba(28,25,23,0.04)] backdrop-blur-md"
+          : "border-b border-transparent bg-transparent"
+      }`}
+    >
       <div className="mx-auto grid h-14 max-w-6xl grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 sm:h-[4.25rem] sm:gap-4 sm:px-6">
         <div className="justify-self-start">
           <button
             type="button"
-            className="inline-flex min-h-11 items-center gap-2 text-[11px] tracking-[0.18em] text-[#3f3a34] uppercase transition hover:text-[#1c1917]"
+            className={`inline-flex min-h-11 items-center gap-2 text-[11px] tracking-[0.18em] uppercase transition ${menuInk}`}
             aria-expanded={menuOpen}
             aria-controls={menuId}
             aria-label="Menu"
@@ -141,15 +177,27 @@ export function SiteHeader() {
         >
           <span
             aria-hidden
-            className="mb-0.5 text-[#8a8278] opacity-80 transition group-hover:text-[#1c1917]"
+            className={`mb-0.5 opacity-80 transition ${
+              lightChrome
+                ? "text-[#e8dfd0]/75 group-hover:text-[#f7f3ec]"
+                : "text-[#8a8278] group-hover:text-[#1c1917]"
+            }`}
           >
-            <svg viewBox="0 0 24 24" className="mx-auto size-3.5" fill="none" stroke="currentColor" strokeWidth="1.4">
+            <svg
+              viewBox="0 0 24 24"
+              className="mx-auto size-3.5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.4"
+            >
               <path d="M4 20V8l8-4 8 4v12" />
               <path d="M4 10h16" />
               <path d="M8 20V12M12 20V12M16 20V12" />
             </svg>
           </span>
-          <span className="text-[10px] font-semibold tracking-[0.22em] text-[#1c1917] uppercase sm:text-xs sm:tracking-[0.28em]">
+          <span
+            className={`text-[10px] font-semibold tracking-[0.22em] uppercase sm:text-xs sm:tracking-[0.28em] ${inkStrong}`}
+          >
             Hannibal HERITAGE
           </span>
         </Link>
@@ -158,7 +206,7 @@ export function SiteHeader() {
           {user?.role === "ADMIN" ? (
             <Link
               href="/dashboard"
-              className="hidden min-h-11 items-center px-1.5 text-[10px] tracking-[0.14em] text-[#5c564e] uppercase transition hover:text-[#1c1917] lg:inline-flex"
+              className={`hidden min-h-11 items-center px-1.5 text-[10px] tracking-[0.14em] uppercase transition lg:inline-flex ${ink}`}
             >
               Dashboard
             </Link>
@@ -168,14 +216,14 @@ export function SiteHeader() {
             <button
               type="button"
               onClick={() => void handleLogout()}
-              className="hidden min-h-11 items-center px-1.5 text-[10px] tracking-[0.14em] text-[#5c564e] uppercase transition hover:text-[#1c1917] sm:inline-flex"
+              className={`hidden min-h-11 items-center px-1.5 text-[10px] tracking-[0.14em] uppercase transition sm:inline-flex ${ink}`}
             >
               Logout
             </button>
           ) : (
             <Link
               href="/login"
-              className="hidden min-h-11 items-center px-1.5 text-[10px] tracking-[0.14em] text-[#5c564e] uppercase transition hover:text-[#1c1917] sm:inline-flex"
+              className={`hidden min-h-11 items-center px-1.5 text-[10px] tracking-[0.14em] uppercase transition sm:inline-flex ${ink}`}
             >
               Login
             </Link>
@@ -183,16 +231,16 @@ export function SiteHeader() {
 
           <Link
             href="/panier"
-            className="inline-flex min-h-11 items-center gap-1 px-1.5 text-[10px] tracking-[0.14em] text-[#5c564e] uppercase transition hover:text-[#1c1917]"
+            className={`inline-flex min-h-11 items-center gap-1 px-1.5 text-[10px] tracking-[0.14em] uppercase transition ${ink}`}
             aria-label={`Cart (${cartCount})`}
           >
             Cart
-            <span className="tabular-nums text-[#8a8278]">{cartCount}</span>
+            <span className={`tabular-nums ${inkMuted}`}>{cartCount}</span>
           </Link>
 
           <Link
             href="/sajnen"
-            className="hidden min-h-11 items-center px-1.5 text-[10px] tracking-[0.14em] text-[#5c564e] uppercase transition hover:text-[#1c1917] md:inline-flex"
+            className={`hidden min-h-11 items-center px-1.5 text-[10px] tracking-[0.14em] uppercase transition md:inline-flex ${ink}`}
             aria-label="Wishlist"
           >
             Wishlist
@@ -200,7 +248,7 @@ export function SiteHeader() {
 
           <button
             type="button"
-            className="inline-flex min-h-11 min-w-11 items-center justify-center text-[#5c564e] transition hover:text-[#1c1917]"
+            className={`inline-flex min-h-11 min-w-11 items-center justify-center transition ${ink}`}
             aria-expanded={searchOpen}
             aria-controls={searchId}
             aria-label="Search"
@@ -209,24 +257,35 @@ export function SiteHeader() {
               setMenuOpen(false);
             }}
           >
-            <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+            <svg
+              viewBox="0 0 24 24"
+              className="size-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              aria-hidden
+            >
               <circle cx="11" cy="11" r="6.5" />
               <path d="M16 16l4 4" />
             </svg>
           </button>
 
-          <label className="flex min-h-11 items-center pl-0.5 text-[10px] tracking-[0.12em] text-[#5c564e] uppercase">
+          <label
+            className={`flex min-h-11 items-center pl-0.5 text-[10px] tracking-[0.12em] uppercase ${ink}`}
+          >
             <span className="sr-only">Currency</span>
             <select
               value={currency}
               onChange={(event) =>
                 setSelectedCurrency(event.target.value as CurrencyCode)
               }
-              className="max-w-[3.75rem] cursor-pointer border-0 bg-transparent py-2 text-[10px] tracking-[0.12em] text-[#5c564e] uppercase outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
+              className={`max-w-[3.75rem] cursor-pointer border-0 bg-transparent py-2 text-[10px] tracking-[0.12em] uppercase outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5] ${
+                lightChrome ? "text-[#f7f3ec]" : "text-[#5c564e]"
+              }`}
               aria-label="Currency"
             >
               {available.map((code) => (
-                <option key={code} value={code}>
+                <option key={code} value={code} className="text-[#1c1917]">
                   {code}
                 </option>
               ))}
@@ -248,7 +307,7 @@ export function SiteHeader() {
             name="q"
             type="search"
             placeholder="Search Sejnane or olive wood…"
-            className="min-h-11 flex-1 border border-[#ddd4c5] bg-transparent px-3 text-sm outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
+            className="min-h-11 flex-1 border border-[#ddd4c5] bg-transparent px-3 text-sm text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
           />
           <button
             type="submit"

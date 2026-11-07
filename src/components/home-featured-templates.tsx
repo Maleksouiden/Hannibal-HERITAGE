@@ -34,7 +34,7 @@ export function HomeFeaturedTemplates({ templates }: HomeFeaturedTemplatesProps)
 
   return (
     <section
-      className="relative isolate min-h-[min(100dvh,56rem)] w-full overflow-hidden bg-[#1c1917] sm:min-h-[calc(100dvh-4.25rem)]"
+      className="relative isolate -mt-14 min-h-[100dvh] w-full overflow-hidden bg-[#1c1917] sm:-mt-[4.25rem]"
       aria-roledescription="carousel"
       aria-label="Featured collections"
       onMouseEnter={() => setPaused(true)}

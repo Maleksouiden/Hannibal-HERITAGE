@@ -111,7 +111,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="border-t border-white/10 px-4 py-5 text-center text-[10px] tracking-[0.16em] text-[#9a9082] uppercase sm:px-6">
-        © {new Date().getFullYear()} Hannibal HERITAGE
+        © 2026 Hannibal HERITAGE
       </div>
     </footer>
   );

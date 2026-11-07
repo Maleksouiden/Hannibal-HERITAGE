@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { AuthForm } from "@/components/auth-form";
 import { AuthShell } from "@/components/auth-shell";
 
@@ -7,20 +8,21 @@ export const metadata: Metadata = {
   description: "Sign in to your Hannibal HERITAGE account.",
 };
 
-type PageProps = {
-  searchParams: Promise<{ next?: string }>;
-};
+function AuthFormFallback() {
+  return (
+    <div
+      className="min-h-48 animate-pulse rounded-sm bg-[#ebe4d8]/60"
+      aria-hidden
+    />
+  );
+}
 
-export default async function LoginPage({ searchParams }: PageProps) {
-  const params = await searchParams;
-  const nextPath =
-    params.next && params.next.startsWith("/") && !params.next.startsWith("//")
-      ? params.next
-      : undefined;
-
+export default function LoginPage() {
   return (
     <AuthShell mode="login">
-      <AuthForm mode="login" nextPath={nextPath} />
+      <Suspense fallback={<AuthFormFallback />}>
+        <AuthForm mode="login" />
+      </Suspense>
     </AuthShell>
   );
 }

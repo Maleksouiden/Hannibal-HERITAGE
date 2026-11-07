@@ -6,13 +6,13 @@ import { listCatalogProducts } from "@/lib/catalog-repository";
 const display = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
-  variable: "--font-sajnen-display",
+  variable: "--font-catalog-display",
 });
 
 const body = Figtree({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
-  variable: "--font-sajnen-body",
+  variable: "--font-catalog-body",
 });
 
 export const metadata: Metadata = {
@@ -30,7 +30,7 @@ export default async function SajnenCatalogPage() {
   return (
     <div
       className={`${display.variable} ${body.variable} flex w-full flex-1 flex-col`}
-      style={{ fontFamily: "var(--font-sajnen-body), sans-serif" }}
+      style={{ fontFamily: "var(--font-catalog-body), sans-serif" }}
     >
       <SajnenCatalogView
         products={products}

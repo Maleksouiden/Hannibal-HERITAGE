@@ -34,6 +34,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col overflow-x-clip bg-[#f7f3ec] font-sans text-[#1c1917]">
         <SiteHeader />
+        {/* Spacer for fixed header; home hero pulls under with negative margin. */}
+        <div
+          className="h-14 shrink-0 sm:h-[4.25rem]"
+          aria-hidden
+        />
         {children}
         <SiteFooter />
       </body>

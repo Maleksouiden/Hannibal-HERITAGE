@@ -121,6 +121,36 @@ async function main() {
       },
     });
 
+    /** Durable storefront admins — survive reseed; existing passwords kept. */
+    const EXTRA_ADMIN_EMAILS = [
+      "maleksouiden689@gmail.com",
+      ...(process.env.EXTRA_ADMIN_EMAILS ?? "")
+        .split(",")
+        .map((value) => value.trim().toLowerCase())
+        .filter(Boolean),
+    ];
+
+    for (const email of [...new Set(EXTRA_ADMIN_EMAILS)]) {
+      const existing = await prisma.user.findUnique({ where: { email } });
+      if (existing) {
+        await prisma.user.update({
+          where: { email },
+          data: { role: "ADMIN" },
+        });
+        console.log(`Promoted existing user to ADMIN: ${email}`);
+      } else {
+        await prisma.user.create({
+          data: {
+            email,
+            fullName: email.split("@")[0] ?? "Admin",
+            passwordHash,
+            role: "ADMIN",
+          },
+        });
+        console.log(`Created ADMIN user: ${email}`);
+      }
+    }
+
     await prisma.siteSettings.upsert({
       where: { id: "default" },
       update: {},

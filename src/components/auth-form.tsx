@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 
 type Mode = "login" | "signup";
@@ -21,6 +21,7 @@ const fieldClass =
 
 export function AuthForm({ mode, nextPath }: AuthFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -54,7 +55,9 @@ export function AuthForm({ mode, nextPath }: AuthFormProps) {
       if (!response.ok) {
         throw new Error(data.error ?? "Authentication failed");
       }
-      const next = safeNextPath(nextPath);
+      const next = safeNextPath(
+        nextPath ?? searchParams.get("next") ?? undefined,
+      );
       const destination =
         next !== "/"
           ? next
