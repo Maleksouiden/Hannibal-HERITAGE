@@ -95,6 +95,35 @@ model ProductImage {
   @@index([productId])
 }
 
+/// Home featured slides + storefront chrome flags (SCRUM-65).
+model HomeFeaturedTemplate {
+  id          String   @id
+  catalog     Catalog
+  title       String
+  body        String   @db.Text
+  ctaLabel    String
+  href        String
+  imageSrc    String   @db.VarChar(2048)
+  imageAlt    String
+  isPublished Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isPublished])
+  @@index([sortOrder])
+}
+
+model SiteSettings {
+  id                 String   @id @default("default")
+  homeHeroPublished  Boolean  @default(true)
+  menuShowAccueil    Boolean  @default(true)
+  menuShowSajnen     Boolean  @default(true)
+  menuShowOliveWood  Boolean  @default(true)
+  menuShowAPropos    Boolean  @default(true)
+  updatedAt          DateTime @updatedAt
+}
+
 /// Checkout / invoicing (SCRUM-13+). Runtime may still use file store for orders until dashboard wiring.
 enum OrderStatus {
   PENDING_PAYMENT

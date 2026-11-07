@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useId, useState, useSyncExternalStore } from "react";
+import { useEffect, useId, useMemo, useState, useSyncExternalStore } from "react";
 import { CURRENCY_CODES, type CurrencyCode } from "@/lib/currency-codes";
 import {
   getSelectedCurrency,
@@ -12,13 +12,25 @@ import {
 import { getCartCount, subscribeCart } from "@/lib/cart-store";
 import { useCurrencyRates } from "@/lib/currency-rates-client";
 import { useAuthUser } from "@/lib/auth-client";
+import type { SiteMenuFlags } from "@/lib/site-content";
 
 const NAV_ITEMS = [
-  { href: "/", label: "Accueil" },
-  { href: "/sajnen", label: "Sejnane" },
-  { href: "/olive-wood", label: "Olive wood" },
-  { href: "#a-propos", label: "À propos" },
-] as const;
+  { href: "/", label: "Accueil", flag: "showAccueil" },
+  { href: "/sajnen", label: "Sejnane", flag: "showSajnen" },
+  { href: "/olive-wood", label: "Olive wood", flag: "showOliveWood" },
+  { href: "#a-propos", label: "À propos", flag: "showAPropos" },
+] as const satisfies ReadonlyArray<{
+  href: string;
+  label: string;
+  flag: keyof SiteMenuFlags;
+}>;
+
+const DEFAULT_MENU: SiteMenuFlags = {
+  showAccueil: true,
+  showSajnen: true,
+  showOliveWood: true,
+  showAPropos: true,
+};
 
 /**
  * Sticky brand header for Hannibal HERITAGE (SCRUM-6 / SCRUM-15 responsive).
@@ -28,6 +40,7 @@ const NAV_ITEMS = [
  */
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuFlags, setMenuFlags] = useState<SiteMenuFlags>(DEFAULT_MENU);
   const menuId = useId();
   const router = useRouter();
   const { user, logout } = useAuthUser();
@@ -45,6 +58,36 @@ export function SiteHeader() {
   const available = rates
     ? CURRENCY_CODES.filter((code) => code in rates.rates)
     : [...CURRENCY_CODES];
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetch("/api/site", { credentials: "same-origin" })
+      .then(async (response) => {
+        if (!response.ok) return;
+        const data = (await response.json()) as {
+          settings?: SiteMenuFlags;
+        };
+        if (!cancelled && data.settings) {
+          setMenuFlags({
+            showAccueil: data.settings.showAccueil,
+            showSajnen: data.settings.showSajnen,
+            showOliveWood: data.settings.showOliveWood,
+            showAPropos: data.settings.showAPropos,
+          });
+        }
+      })
+      .catch(() => {
+        /* keep defaults */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const navItems = useMemo(
+    () => NAV_ITEMS.filter((item) => menuFlags[item.flag]),
+    [menuFlags],
+  );
 
   async function handleLogout() {
     await logout();
@@ -145,7 +188,7 @@ export function SiteHeader() {
         aria-label="Primary"
       >
         <ul className="mx-auto flex max-w-6xl flex-col gap-1 px-3 py-3 sm:px-6 sm:py-4">
-          {NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <li key={item.href}>
               <Link
                 href={item.href}

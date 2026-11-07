@@ -5,6 +5,7 @@ import { PrismaClient } from "../src/generated/prisma/client";
 import { OLIVE_WOOD_PRODUCTS } from "../src/data/olive-wood-products";
 import { PRODUCT_GALLERIES } from "../src/data/product-galleries";
 import { SAJNEN_PRODUCTS } from "../src/data/sajnen-products";
+import { HOME_TEMPLATES } from "../src/lib/home-templates";
 import { productPriceMinor } from "../src/lib/product-display";
 
 function createClient() {
@@ -120,9 +121,44 @@ async function main() {
       },
     });
 
+    await prisma.siteSettings.upsert({
+      where: { id: "default" },
+      update: {},
+      create: { id: "default" },
+    });
+
+    for (const [index, template] of HOME_TEMPLATES.entries()) {
+      await prisma.homeFeaturedTemplate.upsert({
+        where: { id: template.id },
+        update: {
+          title: template.title,
+          body: template.body,
+          ctaLabel: template.ctaLabel,
+          href: template.href,
+          imageSrc: template.imageSrc,
+          imageAlt: template.imageAlt,
+          catalog: template.catalog === "sajnen" ? "SAJNEN" : "OLIVE_WOOD",
+          sortOrder: index,
+        },
+        create: {
+          id: template.id,
+          catalog: template.catalog === "sajnen" ? "SAJNEN" : "OLIVE_WOOD",
+          title: template.title,
+          body: template.body,
+          ctaLabel: template.ctaLabel,
+          href: template.href,
+          imageSrc: template.imageSrc,
+          imageAlt: template.imageAlt,
+          isPublished: true,
+          sortOrder: index,
+        },
+      });
+    }
+
     const count = await prisma.product.count();
     console.log(`Seed complete. Products in DB: ${count}`);
     console.log(`Admin user ready: ${adminEmail}`);
+    console.log("Site content templates seeded");
   } finally {
     await prisma.$disconnect();
   }

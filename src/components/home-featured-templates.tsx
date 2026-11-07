@@ -3,26 +3,35 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { HOME_TEMPLATES } from "@/lib/home-templates";
+import type { HomeTemplate } from "@/lib/home-templates";
 
 const AUTO_MS = 7000;
 
+type HomeFeaturedTemplatesProps = {
+  templates: HomeTemplate[];
+};
+
 /**
- * Moving featured templates under the sticky logo (SCRUM-7).
- * Notion: each slide is a product-family story (Sejnane / olive wood),
- * inspired by artisancollection-style rotating collection heroes.
+ * Moving featured templates under the sticky logo (SCRUM-7 / SCRUM-65).
+ * Slides come from MySQL when configured; static seed is the fallback.
  */
-export function HomeFeaturedTemplates() {
+export function HomeFeaturedTemplates({ templates }: HomeFeaturedTemplatesProps) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
-    if (paused || HOME_TEMPLATES.length < 2) return;
+    setActive(0);
+  }, [templates]);
+
+  useEffect(() => {
+    if (paused || templates.length < 2) return;
     const id = window.setInterval(() => {
-      setActive((i) => (i + 1) % HOME_TEMPLATES.length);
+      setActive((i) => (i + 1) % templates.length);
     }, AUTO_MS);
     return () => window.clearInterval(id);
-  }, [paused]);
+  }, [paused, templates.length]);
+
+  if (templates.length === 0) return null;
 
   return (
     <section
@@ -38,7 +47,7 @@ export function HomeFeaturedTemplates() {
         }
       }}
     >
-      {HOME_TEMPLATES.map((template, index) => {
+      {templates.map((template, index) => {
         const isActive = index === active;
         return (
           <article
@@ -87,26 +96,28 @@ export function HomeFeaturedTemplates() {
         );
       })}
 
-      <div className="absolute bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 sm:bottom-6 sm:gap-2">
-        {HOME_TEMPLATES.map((template, index) => (
-          <button
-            key={template.id}
-            type="button"
-            aria-label={`Show ${template.catalog === "sajnen" ? "Sejnane" : "Olive wood"} template`}
-            aria-current={index === active}
-            className={`flex min-h-11 min-w-11 items-center justify-center`}
-            onClick={() => setActive(index)}
-          >
-            <span
-              className={`block h-1.5 transition-all duration-500 ${
-                index === active
-                  ? "w-8 bg-[#f7f3ec]"
-                  : "w-3 bg-[#f7f3ec]/40"
-              }`}
-            />
-          </button>
-        ))}
-      </div>
+      {templates.length > 1 ? (
+        <div className="absolute bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 sm:bottom-6 sm:gap-2">
+          {templates.map((template, index) => (
+            <button
+              key={template.id}
+              type="button"
+              aria-label={`Show ${template.catalog === "sajnen" ? "Sejnane" : "Olive wood"} template`}
+              aria-current={index === active}
+              className="flex min-h-11 min-w-11 items-center justify-center"
+              onClick={() => setActive(index)}
+            >
+              <span
+                className={`block h-1.5 transition-all duration-500 ${
+                  index === active
+                    ? "w-8 bg-[#f7f3ec]"
+                    : "w-3 bg-[#f7f3ec]/40"
+                }`}
+              />
+            </button>
+          ))}
+        </div>
+      ) : null}
     </section>
   );
 }
