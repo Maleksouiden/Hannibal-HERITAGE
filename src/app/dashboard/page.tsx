@@ -1,20 +1,12 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { getDashboardOverview } from "@/lib/dashboard-stats";
 
-export default async function DashboardHomePage() {
+async function DashboardOverview() {
   const { stats, recentOrders } = await getDashboardOverview();
 
   return (
-    <main className="flex flex-col gap-10">
-      <header>
-        <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          Overview
-        </h2>
-        <p className="mt-3 max-w-xl text-sm leading-6 text-[#5c564e] sm:text-base sm:leading-7">
-          Live figures from MySQL — catalog health, accounts, and orders.
-        </p>
-      </header>
-
+    <>
       <section aria-label="Key metrics">
         <ul className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
           {stats.map((stat) => {
@@ -35,7 +27,10 @@ export default async function DashboardHomePage() {
             );
 
             return (
-              <li key={stat.label} className="min-w-0 border-t border-[#ddd4c5]/90 pt-4">
+              <li
+                key={stat.label}
+                className="min-w-0 border-t border-[#ddd4c5]/90 pt-4"
+              >
                 {stat.href ? (
                   <Link
                     href={stat.href}
@@ -67,8 +62,8 @@ export default async function DashboardHomePage() {
 
         {recentOrders.length === 0 ? (
           <p className="border-t border-[#ddd4c5]/90 pt-4 text-sm text-[#5c564e]">
-            No orders in MySQL yet. Checkout still writes the file store until
-            orders are migrated; product and inventory figures above are live.
+            No orders in MySQL yet. Product and inventory figures above are
+            live from the catalog.
           </p>
         ) : (
           <ul className="divide-y divide-[#ddd4c5]/80 border-t border-[#ddd4c5]/90">
@@ -97,6 +92,28 @@ export default async function DashboardHomePage() {
           </ul>
         )}
       </section>
+    </>
+  );
+}
+
+export default function DashboardHomePage() {
+  return (
+    <main className="flex flex-col gap-10">
+      <header>
+        <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+          Overview
+        </h2>
+        <p className="mt-3 max-w-xl text-sm leading-6 text-[#5c564e] sm:text-base sm:leading-7">
+          Live figures from MySQL — catalog health, accounts, and orders.
+        </p>
+      </header>
+      <Suspense
+        fallback={
+          <div className="h-40 animate-pulse rounded-sm bg-[#ebe4d8]/70" />
+        }
+      >
+        <DashboardOverview />
+      </Suspense>
     </main>
   );
 }

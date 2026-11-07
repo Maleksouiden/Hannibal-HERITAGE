@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
 import type { UserRole } from "@/generated/prisma/client";
-import { prisma } from "@/lib/prisma";
+import { ensureDbRuntime, prisma } from "@/lib/prisma";
 
 export const SESSION_COOKIE = "hh_session";
 const SESSION_DAYS = 14;
@@ -98,6 +98,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   const session = await readSessionToken(token);
   if (!session) return null;
 
+  await ensureDbRuntime();
   const user = await prisma.user.findUnique({
     where: { id: session.id },
     select: { id: true, email: true, fullName: true, role: true },

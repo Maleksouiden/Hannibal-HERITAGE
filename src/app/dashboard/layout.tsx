@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   description: "Admin dashboard for Hannibal HERITAGE.",
 };
 
+/** Admin shell uses cookies + Prisma; allow blocking under cacheComponents. */
+export const instant = false;
+
 export default async function DashboardLayout({
   children,
 }: {

@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import type { CurrencyCode } from "@/lib/currency-codes";
 import { getOrderById } from "@/lib/orders";
 
 type PageProps = {
   params: Promise<{ id: string }>;
 };
+
+/** Order ids are request-time; allow blocking under cacheComponents. */
+export const instant = false;
 
 function formatMoney(amount: number, currency: CurrencyCode): string {
   const fractionDigits = currency === "JPY" ? 0 : currency === "TND" ? 3 : 2;
@@ -27,7 +31,7 @@ export async function generateMetadata({
   return { title: `Order ${order.orderNumber} | Hannibal HERITAGE` };
 }
 
-export default async function OrderConfirmationPage({ params }: PageProps) {
+async function OrderConfirmationContent({ params }: PageProps) {
   const { id } = await params;
   const order = await getOrderById(id);
   if (!order) notFound();
@@ -108,5 +112,19 @@ export default async function OrderConfirmationPage({ params }: PageProps) {
         ← Continue shopping
       </Link>
     </main>
+  );
+}
+
+export default function OrderConfirmationPage({ params }: PageProps) {
+  return (
+    <Suspense
+      fallback={
+        <main className="mx-auto max-w-3xl flex-1 px-4 py-16">
+          <div className="h-40 animate-pulse rounded-sm bg-[#ebe4d8]/70" />
+        </main>
+      }
+    >
+      <OrderConfirmationContent params={params} />
+    </Suspense>
   );
 }

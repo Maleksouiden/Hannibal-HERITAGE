@@ -1,5 +1,5 @@
 import { isLowStock, isOutOfStock, isSellable } from "@/lib/inventory";
-import { prisma } from "@/lib/prisma";
+import { ensureDbRuntime, prisma } from "@/lib/prisma";
 import { formatProductPrice } from "@/lib/product-display";
 
 export type DashboardStat = {
@@ -27,6 +27,7 @@ export type DashboardOverview = {
  * Server-side admin KPIs from MySQL via Prisma.
  */
 export async function getDashboardOverview(): Promise<DashboardOverview> {
+  await ensureDbRuntime();
   const [
     products,
     categoryCount,

@@ -3,9 +3,10 @@ import {
   adminProductInclude,
   serializeAdminProduct,
 } from "@/lib/admin-products";
-import { prisma } from "@/lib/prisma";
+import { ensureDbRuntime, prisma } from "@/lib/prisma";
 
 export default async function DashboardProductsPage() {
+  await ensureDbRuntime();
   const rows = await prisma.product.findMany({
     include: adminProductInclude,
     orderBy: [{ isArchived: "asc" }, { updatedAt: "desc" }],

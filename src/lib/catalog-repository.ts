@@ -5,7 +5,7 @@ import {
   type CatalogId,
   type SeedProduct,
 } from "@/data/sajnen-products";
-import { prisma } from "@/lib/prisma";
+import { ensureDbRuntime, prisma } from "@/lib/prisma";
 import { productPriceMinor } from "@/lib/product-display";
 
 export type CatalogProduct = SeedProduct & {
@@ -36,6 +36,8 @@ function staticList(catalog: CatalogId): CatalogProduct[] {
 
 async function databaseAvailable(): Promise<boolean> {
   if (!process.env.DATABASE_URL) return false;
+  // Must not catch — connection() postpone signals are not DB failures.
+  await ensureDbRuntime();
   try {
     await prisma.$queryRaw`SELECT 1`;
     return true;

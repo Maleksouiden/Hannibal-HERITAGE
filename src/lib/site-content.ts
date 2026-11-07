@@ -1,6 +1,6 @@
 import type { Catalog } from "@/generated/prisma/client";
 import { HOME_TEMPLATES, type HomeTemplate } from "@/lib/home-templates";
-import { prisma } from "@/lib/prisma";
+import { ensureDbRuntime, prisma } from "@/lib/prisma";
 
 export type SiteMenuFlags = {
   showAccueil: boolean;
@@ -63,6 +63,8 @@ function mapTemplate(row: {
 }
 
 export async function ensureSiteContentSeeded(): Promise<void> {
+  // Must not catch — connection() postpone signals are not DB failures.
+  await ensureDbRuntime();
   try {
     const existing = await prisma.homeFeaturedTemplate.count();
     if (existing === 0) {
@@ -94,8 +96,8 @@ export async function ensureSiteContentSeeded(): Promise<void> {
 }
 
 export async function getSiteSettings(): Promise<SiteSettingsView> {
+  await ensureSiteContentSeeded();
   try {
-    await ensureSiteContentSeeded();
     const row = await prisma.siteSettings.findUnique({
       where: { id: "default" },
     });
@@ -114,8 +116,8 @@ export async function getSiteSettings(): Promise<SiteSettingsView> {
 
 /** Published home slides for the storefront (static fallback). */
 export async function getPublishedHomeTemplates(): Promise<HomeTemplate[]> {
+  await ensureSiteContentSeeded();
   try {
-    await ensureSiteContentSeeded();
     const settings = await getSiteSettings();
     if (!settings.homeHeroPublished) return [];
 

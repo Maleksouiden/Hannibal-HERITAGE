@@ -1,8 +1,9 @@
 import { AdminInventoryTable } from "@/components/admin-inventory-table";
 import { isLowStock, isOutOfStock, sellabilityLabel } from "@/lib/inventory";
-import { prisma } from "@/lib/prisma";
+import { ensureDbRuntime, prisma } from "@/lib/prisma";
 
 export default async function DashboardInventoryPage() {
+  await ensureDbRuntime();
   const rows = await prisma.product.findMany({
     where: { isArchived: false },
     orderBy: [{ catalog: "asc" }, { name: "asc" }],

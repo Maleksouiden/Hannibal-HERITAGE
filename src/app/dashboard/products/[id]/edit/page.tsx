@@ -4,7 +4,7 @@ import {
   adminProductInclude,
   serializeAdminProduct,
 } from "@/lib/admin-products";
-import { prisma } from "@/lib/prisma";
+import { ensureDbRuntime, prisma } from "@/lib/prisma";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -12,6 +12,7 @@ type PageProps = {
 
 export default async function EditProductPage({ params }: PageProps) {
   const { id } = await params;
+  await ensureDbRuntime();
   const row = await prisma.product.findUnique({
     where: { id },
     include: adminProductInclude,

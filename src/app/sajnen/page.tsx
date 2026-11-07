@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Figtree } from "next/font/google";
+import { Suspense } from "react";
+import { CatalogRouteFallback } from "@/components/catalog-route-fallback";
 import { SajnenCatalogView } from "@/components/sajnen-catalog-view";
 import { listCatalogProducts } from "@/lib/catalog-repository";
 
@@ -21,7 +23,7 @@ export const metadata: Metadata = {
     "Browse handcrafted Sejnane pottery — authentic Tunisian ceramics shaped by women artisans.",
 };
 
-export default async function SajnenCatalogPage() {
+async function SajnenCatalogContent() {
   const products = await listCatalogProducts("SAJNEN");
   const hero =
     products.find((p) => p.slug === "2-legged-bumpy-clay-pot-with-lid") ??
@@ -39,5 +41,13 @@ export default async function SajnenCatalogPage() {
         }
       />
     </div>
+  );
+}
+
+export default function SajnenCatalogPage() {
+  return (
+    <Suspense fallback={<CatalogRouteFallback />}>
+      <SajnenCatalogContent />
+    </Suspense>
   );
 }

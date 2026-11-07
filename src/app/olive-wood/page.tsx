@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Figtree } from "next/font/google";
+import { Suspense } from "react";
+import { CatalogRouteFallback } from "@/components/catalog-route-fallback";
 import { OliveWoodCatalogView } from "@/components/olive-wood-catalog-view";
 import { listCatalogProducts } from "@/lib/catalog-repository";
 
@@ -21,7 +23,7 @@ export const metadata: Metadata = {
     "Browse handcrafted Tunisian olive wood pieces — boards, utensils, and tableware.",
 };
 
-export default async function OliveWoodCatalogPage() {
+async function OliveWoodCatalogContent() {
   const products = await listCatalogProducts("OLIVE_WOOD");
   const hero =
     products.find((p) => p.slug === "olive-wood-board") ??
@@ -40,5 +42,13 @@ export default async function OliveWoodCatalogPage() {
         }
       />
     </div>
+  );
+}
+
+export default function OliveWoodCatalogPage() {
+  return (
+    <Suspense fallback={<CatalogRouteFallback />}>
+      <OliveWoodCatalogContent />
+    </Suspense>
   );
 }
