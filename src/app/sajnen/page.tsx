@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ProductCard } from "@/components/product-card";
-import { listSajnenProducts } from "@/data/sajnen-products";
+import { listCatalogProducts } from "@/lib/catalog-repository";
 
 export const metadata: Metadata = {
   title: "Sejnane pottery | Hannibal HERITAGE",
@@ -8,8 +8,8 @@ export const metadata: Metadata = {
     "Browse handcrafted Sejnane pottery — authentic Tunisian ceramics shaped by women artisans.",
 };
 
-export default function SajnenCatalogPage() {
-  const products = listSajnenProducts();
+export default async function SajnenCatalogPage() {
+  const products = await listCatalogProducts("SAJNEN");
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-12 sm:px-6 sm:py-16">
@@ -30,10 +30,7 @@ export default function SajnenCatalogPage() {
       <ul className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4">
         {products.map((product) => (
           <li key={product.slug}>
-            <ProductCard
-              product={product}
-              href={`/sajnen/${product.slug}`}
-            />
+            <ProductCard product={product} href={`/sajnen/${product.slug}`} />
           </li>
         ))}
       </ul>

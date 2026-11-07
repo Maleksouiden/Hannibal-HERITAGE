@@ -72,7 +72,7 @@ model ProductImage {
   @@index([productId])
 }
 
-/// Checkout / invoicing (SCRUM-13+). File store used until MySQL migrate.
+/// Checkout / invoicing (SCRUM-13+). Runtime may still use file store for orders until dashboard wiring.
 enum OrderStatus {
   PENDING_PAYMENT
   PAID_STUB

@@ -1,6 +1,6 @@
 # Hannibal HERITAGE
 
-Artisan e-commerce scaffold for **Hannibal HERITAGE** (Sajnen + olive wood catalogs later).
+Artisan e-commerce for **Hannibal HERITAGE** (Sejnane + olive wood).
 
 Stack: **Next.js (App Router) + TypeScript + Tailwind CSS + Prisma + MySQL**.
 
@@ -8,7 +8,7 @@ Stack: **Next.js (App Router) + TypeScript + Tailwind CSS + Prisma + MySQL**.
 
 - Node.js 20+ (tested with Node 24)
 - npm
-- MySQL 8+ (or MariaDB 10.11+) running locally on Windows
+- MySQL 8+ **or** Docker Desktop (recommended on Windows)
 
 ## Install
 
@@ -18,59 +18,54 @@ npm install
 copy .env.example .env
 ```
 
-Edit `.env` with your MySQL user, password, and database name.
-
 ## MySQL on Windows
 
-1. Install [MySQL Community Server](https://dev.mysql.com/downloads/mysql/) **or** [MariaDB](https://mariadb.org/download/) (XAMPP/WAMP also work if MySQL is enabled).
-2. During setup, note the root password (or create a dedicated user).
-3. Start the MySQL service (Services → `MySQL80` / `MariaDB`, or MySQL Installer → Start).
-4. Create the app database:
+### Option A — Docker (recommended)
+
+1. Start **Docker Desktop**.
+2. From the repo:
+
+```powershell
+docker compose up -d
+```
+
+3. Defaults match `.env.example` (`hannibal` / `hannibal` / DB `hannibal_heritage` on host port `3307`).
+
+### Option B — Local MySQL / MariaDB / XAMPP
+
+1. Install [MySQL Community Server](https://dev.mysql.com/downloads/mysql/), [MariaDB](https://mariadb.org/download/), or XAMPP with MySQL enabled.
+2. Start the service (`MySQL80` / `MariaDB`).
+3. Create the database and user:
 
 ```sql
 CREATE DATABASE hannibal_heritage CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-Optional dedicated user:
-
-```sql
-CREATE USER 'hannibal'@'localhost' IDENTIFIED BY 'your-strong-password';
+CREATE USER 'hannibal'@'localhost' IDENTIFIED BY 'hannibal';
 GRANT ALL PRIVILEGES ON hannibal_heritage.* TO 'hannibal'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-5. Put those values in `.env` (`DATABASE_URL` plus the `DATABASE_*` fields).
+4. Align `.env` (`DATABASE_URL` + `DATABASE_*`).
 
-Default port is `3306`. Confirm with:
-
-```powershell
-mysql -u root -p -e "SHOW DATABASES;"
-```
-
-## Prisma
-
-Generate the client (no live DB required):
+## Prisma migrate + seed
 
 ```powershell
 npm run db:generate
-```
-
-After MySQL is up and `.env` is filled:
-
-```powershell
 npm run db:migrate
+npm run db:seed
 ```
 
-Useful commands:
+`db:migrate` prompts for a migration name on first run (e.g. `init_catalogs`).  
+`db:seed` loads Sejnane + olive wood from `src/data/*` into `Category` / `Product` / `ProductImage`.
 
 | Script | Purpose |
 | --- | --- |
 | `npm run db:generate` | Generate Prisma Client |
-| `npm run db:migrate` | Create/apply migrations (`prisma migrate dev`) |
+| `npm run db:migrate` | Create/apply migrations |
 | `npm run db:push` | Push schema without migration files |
+| `npm run db:seed` | Seed catalogs from static Notion-derived data |
 | `npm run db:studio` | Open Prisma Studio |
 
-Starter models: `Category`, `Product`, `ProductImage`, with `Catalog` enum (`SAJNEN`, `OLIVE_WOOD`).
+Models: `Category`, `Product`, `ProductImage`, `Order`, `OrderItem`. Catalogs: `SAJNEN`, `OLIVE_WOOD`.
 
 ## Run the app
 
@@ -80,12 +75,10 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-## Project notes
+### Catalog data source
 
-- Brand: Hannibal HERITAGE
-- Planned UI: sticky centered logo, left menu, cart, currency
-- Inspiration: artisancollection.com
-- This repo is a **scaffold only** — full shop UI/catalog is not built yet
+- **With MySQL up + seeded:** `/sajnen` and `/olive-wood` (and PDPs) read published products from the database.
+- **Fallback:** if `DATABASE_URL` is missing or MySQL is unreachable, the storefront uses the static seed modules under `src/data/` so the site still runs.
 
 ## Scripts
 

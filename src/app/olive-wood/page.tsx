@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ProductCard } from "@/components/product-card";
-import { listOliveWoodProducts } from "@/data/olive-wood-products";
+import { listCatalogProducts } from "@/lib/catalog-repository";
 
 export const metadata: Metadata = {
   title: "Olive wood | Hannibal HERITAGE",
@@ -8,8 +8,8 @@ export const metadata: Metadata = {
     "Browse handcrafted Tunisian olive wood pieces — boards, utensils, and tableware.",
 };
 
-export default function OliveWoodCatalogPage() {
-  const products = listOliveWoodProducts();
+export default async function OliveWoodCatalogPage() {
+  const products = await listCatalogProducts("OLIVE_WOOD");
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-12 sm:px-6 sm:py-16">

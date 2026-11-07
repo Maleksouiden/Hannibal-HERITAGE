@@ -7,7 +7,7 @@ import {
   convertAmount,
   getCurrencyRates,
 } from "@/lib/currency-server";
-import { resolveUnitPriceMinor } from "@/lib/catalog-lookup";
+import { resolveUnitPriceMinorAsync } from "@/lib/catalog-lookup";
 
 export type OrderStatus = "PENDING_PAYMENT" | "PAID_STUB" | "CANCELLED";
 
@@ -107,7 +107,7 @@ export async function createOrder(
     if (!Number.isFinite(qty) || qty < 1) {
       throw new Error(`Invalid quantity for ${line.slug}`);
     }
-    const resolved = resolveUnitPriceMinor(line.catalog, line.slug);
+    const resolved = await resolveUnitPriceMinorAsync(line.catalog, line.slug);
     if (!resolved) {
       throw new Error(`Unknown product ${line.catalog}/${line.slug}`);
     }

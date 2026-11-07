@@ -1,8 +1,11 @@
 import { PRODUCT_GALLERIES } from "@/data/product-galleries";
 import type { CatalogId, SeedProduct } from "@/data/sajnen-products";
 
-/** Gallery sources: multi-image when available, otherwise primary. */
-export function productImages(product: SeedProduct): string[] {
+/** Gallery sources: DB/product.images, then Notion extras, else primary. */
+export function productImages(
+  product: SeedProduct & { images?: string[] },
+): string[] {
+  if (product.images && product.images.length > 0) return product.images;
   return PRODUCT_GALLERIES[product.slug] ?? [product.imageSrc];
 }
 

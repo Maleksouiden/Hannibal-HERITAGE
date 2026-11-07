@@ -1,0 +1,25 @@
+# Local MySQL for Hannibal HERITAGE (SCRUM-14)
+# Usage: docker compose up -d
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: hannibal-mysql
+    restart: unless-stopped
+    ports:
+      # 3306 often taken by other local MySQL containers on this machine
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: hannibal
+      MYSQL_DATABASE: hannibal_heritage
+      MYSQL_USER: hannibal
+      MYSQL_PASSWORD: hannibal
+    volumes:
+      - hannibal_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uhannibal", "-phannibal"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  hannibal_mysql_data:

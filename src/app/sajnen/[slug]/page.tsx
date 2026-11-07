@@ -1,24 +1,22 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProductDetail } from "@/components/product-detail";
-import {
-  getSajnenProduct,
-  listSajnenProducts,
-} from "@/data/sajnen-products";
+import { getCatalogProduct, listCatalogProducts } from "@/lib/catalog-repository";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return listSajnenProducts().map((product) => ({ slug: product.slug }));
+export async function generateStaticParams() {
+  const products = await listCatalogProducts("SAJNEN");
+  return products.map((product) => ({ slug: product.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product = getSajnenProduct(slug);
+  const product = await getCatalogProduct("SAJNEN", slug);
   if (!product) return { title: "Product | Hannibal HERITAGE" };
   return {
     title: `${product.name} | Hannibal HERITAGE`,
@@ -28,7 +26,7 @@ export async function generateMetadata({
 
 export default async function SajnenProductPage({ params }: PageProps) {
   const { slug } = await params;
-  const product = getSajnenProduct(slug);
+  const product = await getCatalogProduct("SAJNEN", slug);
   if (!product) notFound();
   return <ProductDetail product={product} />;
 }
