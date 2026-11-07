@@ -76,7 +76,7 @@ export function SiteHeader() {
           </label>
 
           <Link
-            href="#panier"
+            href="/panier"
             className="text-xs tracking-[0.14em] uppercase text-[#5c564e] transition hover:text-[#1c1917]"
             aria-label="Panier"
           >

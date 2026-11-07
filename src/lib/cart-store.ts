@@ -62,6 +62,10 @@ export function subscribeCart(listener: Listener): () => void {
   return () => listeners.delete(listener);
 }
 
+function lineKey(catalog: CatalogId, slug: string) {
+  return `${catalog}:${slug}`;
+}
+
 export function addToCart(
   item: Omit<CartLine, "quantity">,
   quantity = 1,
@@ -81,4 +85,44 @@ export function addToCart(
   }
   writeStorage(lines);
   emit();
+}
+
+export function setCartQuantity(
+  catalog: CatalogId,
+  slug: string,
+  quantity: number,
+): void {
+  ensureHydrated();
+  const nextQty = Math.max(0, Math.floor(quantity));
+  if (nextQty === 0) {
+    removeFromCart(catalog, slug);
+    return;
+  }
+  lines = lines.map((line) =>
+    line.slug === slug && line.catalog === catalog
+      ? { ...line, quantity: nextQty }
+      : line,
+  );
+  writeStorage(lines);
+  emit();
+}
+
+export function removeFromCart(catalog: CatalogId, slug: string): void {
+  ensureHydrated();
+  lines = lines.filter(
+    (line) => !(line.slug === slug && line.catalog === catalog),
+  );
+  writeStorage(lines);
+  emit();
+}
+
+export function getCartSubtotalMinor(): number {
+  return getCartLines().reduce(
+    (sum, line) => sum + line.priceMinor * line.quantity,
+    0,
+  );
+}
+
+export function cartLineId(line: CartLine): string {
+  return lineKey(line.catalog, line.slug);
 }

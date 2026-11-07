@@ -99,7 +99,7 @@ export function ProductDetail({ product }: ProductDetailProps) {
             {added ? "Added to panier" : "Add to panier"}
           </button>
           <Link
-            href="#panier"
+            href="/panier"
             className="text-xs tracking-[0.14em] text-[#5c564e] uppercase transition hover:text-[#1c1917]"
           >
             View panier
