@@ -89,9 +89,9 @@ export function CheckoutForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_300px]"
+      className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-12"
     >
-      <div className="flex flex-col gap-10">
+      <div className="flex flex-col gap-8 sm:gap-10">
         <section className="flex flex-col gap-4">
           <h2 className="text-sm tracking-[0.16em] text-[#8a8278] uppercase">
             Contact
@@ -103,7 +103,7 @@ export function CheckoutForm() {
               type="email"
               required
               autoComplete="email"
-              className="border border-[#ddd4c5] bg-transparent px-3 py-2 text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
+              className="min-h-11 border border-[#ddd4c5] bg-transparent px-3 py-2 text-base text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5] sm:text-sm"
             />
           </label>
           <label className="flex flex-col gap-1 text-sm text-[#5c564e]">
@@ -113,7 +113,7 @@ export function CheckoutForm() {
               type="text"
               required
               autoComplete="name"
-              className="border border-[#ddd4c5] bg-transparent px-3 py-2 text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
+              className="min-h-11 border border-[#ddd4c5] bg-transparent px-3 py-2 text-base text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5] sm:text-sm"
             />
           </label>
           <label className="flex flex-col gap-1 text-sm text-[#5c564e]">
@@ -122,7 +122,7 @@ export function CheckoutForm() {
               name="phone"
               type="tel"
               autoComplete="tel"
-              className="border border-[#ddd4c5] bg-transparent px-3 py-2 text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
+              className="min-h-11 border border-[#ddd4c5] bg-transparent px-3 py-2 text-base text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5] sm:text-sm"
             />
           </label>
         </section>
@@ -138,7 +138,7 @@ export function CheckoutForm() {
               type="text"
               required
               autoComplete="address-line1"
-              className="border border-[#ddd4c5] bg-transparent px-3 py-2 text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
+              className="min-h-11 border border-[#ddd4c5] bg-transparent px-3 py-2 text-base text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5] sm:text-sm"
             />
           </label>
           <label className="flex flex-col gap-1 text-sm text-[#5c564e]">
@@ -147,7 +147,7 @@ export function CheckoutForm() {
               name="shippingLine2"
               type="text"
               autoComplete="address-line2"
-              className="border border-[#ddd4c5] bg-transparent px-3 py-2 text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
+              className="min-h-11 border border-[#ddd4c5] bg-transparent px-3 py-2 text-base text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5] sm:text-sm"
             />
           </label>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -158,7 +158,7 @@ export function CheckoutForm() {
                 type="text"
                 required
                 autoComplete="address-level2"
-                className="border border-[#ddd4c5] bg-transparent px-3 py-2 text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
+                className="min-h-11 border border-[#ddd4c5] bg-transparent px-3 py-2 text-base text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5] sm:text-sm"
               />
             </label>
             <label className="flex flex-col gap-1 text-sm text-[#5c564e]">
@@ -168,7 +168,7 @@ export function CheckoutForm() {
                 type="text"
                 required
                 autoComplete="postal-code"
-                className="border border-[#ddd4c5] bg-transparent px-3 py-2 text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
+                className="min-h-11 border border-[#ddd4c5] bg-transparent px-3 py-2 text-base text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5] sm:text-sm"
               />
             </label>
           </div>
@@ -180,7 +180,7 @@ export function CheckoutForm() {
               defaultValue="Tunisia"
               required
               autoComplete="country-name"
-              className="border border-[#ddd4c5] bg-transparent px-3 py-2 text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
+              className="min-h-11 border border-[#ddd4c5] bg-transparent px-3 py-2 text-base text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5] sm:text-sm"
             />
           </label>
         </section>
@@ -222,7 +222,7 @@ export function CheckoutForm() {
         <button
           type="submit"
           disabled={pending}
-          className="border border-[#1c1917] bg-[#1c1917] px-5 py-3 text-xs tracking-[0.16em] text-[#f7f3ec] uppercase transition hover:bg-transparent hover:text-[#1c1917] disabled:opacity-50"
+          className="inline-flex min-h-11 w-full items-center justify-center border border-[#1c1917] bg-[#1c1917] px-5 py-3 text-xs tracking-[0.16em] text-[#f7f3ec] uppercase transition hover:bg-transparent hover:text-[#1c1917] disabled:opacity-50"
         >
           {pending ? "Placing order…" : "Place order"}
         </button>

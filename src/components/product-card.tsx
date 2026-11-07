@@ -28,13 +28,13 @@ export function ProductCard({ product, href }: ProductCardProps) {
           className="object-cover transition duration-500 group-hover:scale-[1.03]"
         />
       </div>
-      <h2 className="text-sm tracking-[0.04em] text-[#3f3a34] transition group-hover:text-[#1c1917]">
+      <h2 className="text-xs leading-5 tracking-[0.04em] text-[#3f3a34] transition group-hover:text-[#1c1917] sm:text-sm sm:leading-normal">
         {product.name}
       </h2>
       <DisplayPrice
         priceMinor={priceMinor}
         sourceCurrency={product.currency}
-        className="text-sm tabular-nums text-[#5c564e]"
+        className="text-xs tabular-nums text-[#5c564e] sm:text-sm"
       />
     </Link>
   );

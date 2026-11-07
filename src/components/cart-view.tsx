@@ -49,12 +49,12 @@ export function CartView() {
   }
 
   return (
-    <div className="flex flex-col gap-10 lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start lg:gap-14">
-      <ul className="flex flex-col divide-y divide-[#ddd4c5]/70">
+    <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start lg:gap-14">
+      <ul className="flex min-w-0 flex-col divide-y divide-[#ddd4c5]/70">
         {lines.map((line) => (
           <li
             key={cartLineId(line)}
-            className="grid grid-cols-[88px_minmax(0,1fr)] gap-4 py-6 sm:grid-cols-[112px_minmax(0,1fr)_auto] sm:gap-6"
+            className="grid grid-cols-[72px_minmax(0,1fr)] gap-3 py-5 sm:grid-cols-[112px_minmax(0,1fr)_auto] sm:gap-6 sm:py-6"
           >
             <Link
               href={productHref(line)}
@@ -75,7 +75,7 @@ export function CartView() {
               </p>
               <Link
                 href={productHref(line)}
-                className="text-sm tracking-[0.02em] text-[#1c1917] hover:underline"
+                className="break-words text-sm tracking-[0.02em] text-[#1c1917] hover:underline"
               >
                 {line.name}
               </Link>
@@ -99,14 +99,14 @@ export function CartView() {
                         setCartQuantity(line.catalog, line.slug, value);
                       }
                     }}
-                    className="w-16 border border-[#ddd4c5] bg-transparent px-2 py-1 text-sm tabular-nums text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
+                    className="min-h-11 w-16 border border-[#ddd4c5] bg-transparent px-2 py-2 text-sm tabular-nums text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
                     aria-label={`Quantity for ${line.name}`}
                   />
                 </label>
                 <button
                   type="button"
                   onClick={() => removeFromCart(line.catalog, line.slug)}
-                  className="text-xs tracking-[0.12em] text-[#8a8278] uppercase transition hover:text-[#1c1917]"
+                  className="inline-flex min-h-11 items-center text-xs tracking-[0.12em] text-[#8a8278] uppercase transition hover:text-[#1c1917]"
                 >
                   Remove
                 </button>
@@ -128,7 +128,7 @@ export function CartView() {
         ))}
       </ul>
 
-      <aside className="flex flex-col gap-4 border-t border-[#ddd4c5]/70 pt-6 lg:border-t-0 lg:pt-0">
+      <aside className="sticky bottom-0 z-20 -mx-4 flex flex-col gap-4 border-t border-[#ddd4c5]/70 bg-[#f7f3ec]/95 px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-md lg:static lg:mx-0 lg:border-t-0 lg:bg-transparent lg:px-0 lg:py-0 lg:pb-0 lg:backdrop-blur-none">
         <div className="flex items-baseline justify-between gap-4">
           <span className="text-xs tracking-[0.16em] text-[#5c564e] uppercase">
             Subtotal
@@ -139,12 +139,12 @@ export function CartView() {
             className="text-lg tabular-nums text-[#1c1917]"
           />
         </div>
-        <p className="text-sm leading-6 text-[#8a8278]">
+        <p className="hidden text-sm leading-6 text-[#8a8278] sm:block">
           Display currency converts for viewing only; stored prices stay in TND.
         </p>
         <Link
           href="/checkout"
-          className="inline-flex items-center justify-center border border-[#1c1917] bg-[#1c1917] px-5 py-3 text-center text-xs tracking-[0.16em] text-[#f7f3ec] uppercase transition hover:bg-transparent hover:text-[#1c1917]"
+          className="inline-flex min-h-11 items-center justify-center border border-[#1c1917] bg-[#1c1917] px-5 py-3 text-center text-xs tracking-[0.16em] text-[#f7f3ec] uppercase transition hover:bg-transparent hover:text-[#1c1917]"
         >
           Checkout
         </Link>

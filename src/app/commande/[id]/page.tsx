@@ -33,15 +33,15 @@ export default async function OrderConfirmationPage({ params }: PageProps) {
   if (!order) notFound();
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 py-12 sm:px-6 sm:py-16">
+    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-8 sm:gap-8 sm:px-6 sm:py-16">
       <header className="flex flex-col gap-3">
         <p className="text-xs tracking-[0.22em] text-[#8a8278] uppercase">
           Confirmation
         </p>
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+        <h1 className="text-2xl font-semibold tracking-tight sm:text-4xl">
           Thank you
         </h1>
-        <p className="text-base leading-7 text-[#5c564e]">
+        <p className="text-sm leading-6 text-[#5c564e] sm:text-base sm:leading-7">
           Order <span className="text-[#1c1917]">{order.orderNumber}</span> is
           recorded. Payment is stubbed for now — invoicing comes later.
         </p>

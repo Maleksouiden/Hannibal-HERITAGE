@@ -26,7 +26,7 @@ export function HomeFeaturedTemplates() {
 
   return (
     <section
-      className="relative isolate min-h-[calc(100dvh-4rem)] w-full overflow-hidden bg-[#1c1917]"
+      className="relative isolate min-h-[min(100dvh,56rem)] w-full overflow-hidden bg-[#1c1917] sm:min-h-[calc(100dvh-4rem)]"
       aria-roledescription="carousel"
       aria-label="Featured collections"
       onMouseEnter={() => setPaused(true)}
@@ -63,20 +63,20 @@ export function HomeFeaturedTemplates() {
               aria-hidden
             />
 
-            <div className="absolute inset-x-0 bottom-0 mx-auto flex max-w-6xl flex-col gap-5 px-4 pb-16 pt-24 sm:px-6 sm:pb-20">
-              <p className="text-xs tracking-[0.22em] text-[#e8dfd0]/80 uppercase">
+            <div className="absolute inset-x-0 bottom-0 mx-auto flex max-w-6xl flex-col gap-3 px-4 pb-20 pt-16 sm:gap-5 sm:px-6 sm:pb-24 sm:pt-24">
+              <p className="text-[10px] tracking-[0.22em] text-[#e8dfd0]/80 uppercase sm:text-xs">
                 {template.catalog === "sajnen" ? "Sejnane" : "Olive wood"}
               </p>
-              <h1 className="max-w-2xl text-3xl font-semibold tracking-tight text-[#f7f3ec] sm:text-5xl">
+              <h1 className="max-w-2xl text-2xl font-semibold tracking-tight text-balance text-[#f7f3ec] sm:text-5xl">
                 {template.title}
               </h1>
-              <p className="max-w-xl text-base leading-7 text-[#e8dfd0]/90 sm:text-lg sm:leading-8">
+              <p className="max-w-xl text-sm leading-6 text-[#e8dfd0]/90 sm:text-lg sm:leading-8">
                 {template.body}
               </p>
               <div>
                 <Link
                   href={template.href}
-                  className="inline-block border border-[#f7f3ec]/70 px-5 py-3 text-xs tracking-[0.18em] text-[#f7f3ec] uppercase transition hover:bg-[#f7f3ec] hover:text-[#1c1917]"
+                  className="inline-flex min-h-11 items-center border border-[#f7f3ec]/70 px-5 py-3 text-xs tracking-[0.18em] text-[#f7f3ec] uppercase transition hover:bg-[#f7f3ec] hover:text-[#1c1917]"
                   tabIndex={isActive ? 0 : -1}
                 >
                   {template.ctaLabel}
@@ -87,20 +87,24 @@ export function HomeFeaturedTemplates() {
         );
       })}
 
-      <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2">
+      <div className="absolute bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 sm:bottom-6 sm:gap-2">
         {HOME_TEMPLATES.map((template, index) => (
           <button
             key={template.id}
             type="button"
             aria-label={`Show ${template.catalog === "sajnen" ? "Sejnane" : "Olive wood"} template`}
             aria-current={index === active}
-            className={`h-1.5 transition-all duration-500 ${
-              index === active
-                ? "w-8 bg-[#f7f3ec]"
-                : "w-3 bg-[#f7f3ec]/40 hover:bg-[#f7f3ec]/70"
-            }`}
+            className={`flex min-h-11 min-w-11 items-center justify-center`}
             onClick={() => setActive(index)}
-          />
+          >
+            <span
+              className={`block h-1.5 transition-all duration-500 ${
+                index === active
+                  ? "w-8 bg-[#f7f3ec]"
+                  : "w-3 bg-[#f7f3ec]/40"
+              }`}
+            />
+          </button>
         ))}
       </div>
     </section>
