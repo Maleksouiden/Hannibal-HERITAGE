@@ -30,7 +30,13 @@ py -3 -m PyInstaller --noconfirm --clean --onefile --name setup --distpath setup
 
 Output: `setup\dist\setup.exe`
 
-Double-click `setup.exe`. While the GitHub repo is **private**, Git must already be logged in (Git Credential Manager / `gh auth`). After the repo is public, clone works anonymously.
+Also copy to the repo root for discovery:
+
+```powershell
+Copy-Item -Force setup\dist\setup.exe .\setup.exe
+```
+
+Double-click **`setup.exe`** (root or `setup\dist\`). While the GitHub repo is **private**, Git must already be logged in (Git Credential Manager / `gh auth`). After the repo is public, clone works anonymously.
 
 ## Notes
 

@@ -10,7 +10,15 @@ Stack: **Next.js (App Router) + TypeScript + Tailwind CSS + Prisma + MySQL**.
 - npm
 - MySQL 8+ **or** Docker Desktop (recommended on Windows)
 
-## Install
+## Windows one-click setup
+
+Double-click **`setup.exe`** at the repo root (same binary as `setup/dist/setup.exe`).
+
+It installs/checks Git + Node if needed, clones or updates this repo under `%USERPROFILE%\Documents\GitHub\Hannibal`, runs `npm install`, creates `.env` from `.env.example` when missing, starts `npm run dev`, and opens [http://localhost:3000](http://localhost:3000).
+
+Details / rebuild: [`setup/README.md`](setup/README.md).
+
+## Install (manual)
 
 ```powershell
 cd C:\Users\CC\Documents\GitHub\Hannibal
