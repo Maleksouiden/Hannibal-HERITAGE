@@ -16,6 +16,9 @@ function safeNextPath(raw: string | undefined): string {
   return raw;
 }
 
+const fieldClass =
+  "min-h-12 w-full border border-[#cfc4b2] bg-[#f7f3ec]/70 px-3 py-3 text-base text-[#1c1917] outline-none transition focus-visible:border-[#1c1917] focus-visible:bg-[#f7f3ec] focus-visible:ring-1 focus-visible:ring-[#1c1917]/30 sm:text-sm";
+
 export function AuthForm({ mode, nextPath }: AuthFormProps) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
@@ -67,32 +70,32 @@ export function AuthForm({ mode, nextPath }: AuthFormProps) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex max-w-md flex-col gap-5">
+    <form onSubmit={onSubmit} className="flex flex-col gap-5">
       {mode === "signup" ? (
-        <label className="flex flex-col gap-1 text-sm text-[#5c564e]">
+        <label className="flex flex-col gap-2 text-xs tracking-[0.14em] text-[#6f675c] uppercase">
           Full name
           <input
             name="fullName"
             type="text"
             required
             autoComplete="name"
-            className="min-h-11 border border-[#ddd4c5] bg-transparent px-3 py-2 text-base text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5] sm:text-sm"
+            className={fieldClass}
           />
         </label>
       ) : null}
 
-      <label className="flex flex-col gap-1 text-sm text-[#5c564e]">
+      <label className="flex flex-col gap-2 text-xs tracking-[0.14em] text-[#6f675c] uppercase">
         Email
         <input
           name="email"
           type="email"
           required
           autoComplete="email"
-          className="min-h-11 border border-[#ddd4c5] bg-transparent px-3 py-2 text-base text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5] sm:text-sm"
+          className={fieldClass}
         />
       </label>
 
-      <label className="flex flex-col gap-1 text-sm text-[#5c564e]">
+      <label className="flex flex-col gap-2 text-xs tracking-[0.14em] text-[#6f675c] uppercase">
         Password
         <input
           name="password"
@@ -100,16 +103,16 @@ export function AuthForm({ mode, nextPath }: AuthFormProps) {
           required
           minLength={mode === "signup" ? 8 : undefined}
           autoComplete={mode === "signup" ? "new-password" : "current-password"}
-          className="min-h-11 border border-[#ddd4c5] bg-transparent px-3 py-2 text-base text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5] sm:text-sm"
+          className={fieldClass}
         />
       </label>
 
-      {error ? <p className="text-sm text-red-800">{error}</p> : null}
+      {error ? <p className="text-sm text-red-900">{error}</p> : null}
 
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex min-h-11 w-full items-center justify-center border border-[#1c1917] bg-[#1c1917] px-5 py-3 text-xs tracking-[0.16em] text-[#f7f3ec] uppercase transition hover:bg-transparent hover:text-[#1c1917] disabled:opacity-50"
+        className="inline-flex min-h-12 w-full items-center justify-center bg-[#1c1917] px-5 text-xs tracking-[0.18em] text-[#f7f3ec] uppercase transition hover:bg-[#3a342c] disabled:opacity-50"
       >
         {pending
           ? mode === "signup"
@@ -120,18 +123,24 @@ export function AuthForm({ mode, nextPath }: AuthFormProps) {
             : "Sign in"}
       </button>
 
-      <p className="text-sm text-[#5c564e]">
+      <p className="text-sm text-[#4a433b]">
         {mode === "signup" ? (
           <>
             Already have an account?{" "}
-            <Link href="/login" className="text-[#1c1917] underline">
+            <Link
+              href="/login"
+              className="text-[#1c1917] underline decoration-[#cfc4b2] underline-offset-4 transition hover:decoration-[#1c1917]"
+            >
               Sign in
             </Link>
           </>
         ) : (
           <>
             New here?{" "}
-            <Link href="/signup" className="text-[#1c1917] underline">
+            <Link
+              href="/signup"
+              className="text-[#1c1917] underline decoration-[#cfc4b2] underline-offset-4 transition hover:decoration-[#1c1917]"
+            >
               Create an account
             </Link>
           </>
