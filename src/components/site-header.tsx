@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useId, useState, useSyncExternalStore } from "react";
 import { CURRENCY_CODES, type CurrencyCode } from "@/lib/currency-codes";
 import {
@@ -10,6 +11,7 @@ import {
 } from "@/lib/currency-preference";
 import { getCartCount, subscribeCart } from "@/lib/cart-store";
 import { useCurrencyRates } from "@/lib/currency-rates-client";
+import { useAuthUser } from "@/lib/auth-client";
 
 const NAV_ITEMS = [
   { href: "/", label: "Accueil" },
@@ -27,6 +29,8 @@ const NAV_ITEMS = [
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuId = useId();
+  const router = useRouter();
+  const { user, logout } = useAuthUser();
   const cartCount = useSyncExternalStore(
     subscribeCart,
     getCartCount,
@@ -41,6 +45,12 @@ export function SiteHeader() {
   const available = rates
     ? CURRENCY_CODES.filter((code) => code in rates.rates)
     : [...CURRENCY_CODES];
+
+  async function handleLogout() {
+    await logout();
+    setMenuOpen(false);
+    router.refresh();
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#ddd4c5]/60 bg-[#f7f3ec]/95 pt-[env(safe-area-inset-top,0px)] backdrop-blur-md">
@@ -89,6 +99,23 @@ export function SiteHeader() {
             </select>
           </label>
 
+          {user ? (
+            <button
+              type="button"
+              onClick={() => void handleLogout()}
+              className="hidden min-h-11 items-center px-1 text-[11px] tracking-[0.1em] text-[#5c564e] uppercase transition hover:text-[#1c1917] sm:inline-flex sm:text-xs sm:tracking-[0.14em]"
+            >
+              Logout
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              className="hidden min-h-11 items-center px-1 text-[11px] tracking-[0.1em] text-[#5c564e] uppercase transition hover:text-[#1c1917] sm:inline-flex sm:text-xs sm:tracking-[0.14em]"
+            >
+              Compte
+            </Link>
+          )}
+
           <Link
             href="/panier"
             className="inline-flex min-h-11 items-center px-1 text-[11px] tracking-[0.1em] text-[#5c564e] uppercase transition hover:text-[#1c1917] sm:text-xs sm:tracking-[0.14em]"
@@ -120,6 +147,39 @@ export function SiteHeader() {
               </Link>
             </li>
           ))}
+          {user ? (
+            <li>
+              <button
+                type="button"
+                className="flex min-h-11 w-full items-center py-2 text-left text-sm tracking-[0.08em] text-[#3f3a34] transition hover:text-[#1c1917]"
+                onClick={() => void handleLogout()}
+              >
+                Logout ({user.fullName}
+                {user.role === "ADMIN" ? " · admin" : ""})
+              </button>
+            </li>
+          ) : (
+            <>
+              <li>
+                <Link
+                  href="/login"
+                  className="flex min-h-11 items-center py-2 text-sm tracking-[0.08em] text-[#3f3a34] transition hover:text-[#1c1917]"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Sign in
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/signup"
+                  className="flex min-h-11 items-center py-2 text-sm tracking-[0.08em] text-[#3f3a34] transition hover:text-[#1c1917]"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Create account
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </nav>
     </header>

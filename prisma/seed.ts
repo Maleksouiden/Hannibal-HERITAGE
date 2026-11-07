@@ -1,4 +1,5 @@
 import "dotenv/config";
+import bcrypt from "bcryptjs";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { OLIVE_WOOD_PRODUCTS } from "../src/data/olive-wood-products";
@@ -97,8 +98,31 @@ async function main() {
       OLIVE_WOOD_PRODUCTS,
     );
 
+    const adminEmail = (
+      process.env.ADMIN_EMAIL ?? "admin@hannibal.local"
+    ).trim().toLowerCase();
+    const adminPassword = process.env.ADMIN_PASSWORD ?? "admin1234";
+    const adminName = process.env.ADMIN_NAME ?? "Hannibal Admin";
+    const passwordHash = await bcrypt.hash(adminPassword, 10);
+
+    await prisma.user.upsert({
+      where: { email: adminEmail },
+      update: {
+        fullName: adminName,
+        passwordHash,
+        role: "ADMIN",
+      },
+      create: {
+        email: adminEmail,
+        fullName: adminName,
+        passwordHash,
+        role: "ADMIN",
+      },
+    });
+
     const count = await prisma.product.count();
     console.log(`Seed complete. Products in DB: ${count}`);
+    console.log(`Admin user ready: ${adminEmail}`);
   } finally {
     await prisma.$disconnect();
   }
