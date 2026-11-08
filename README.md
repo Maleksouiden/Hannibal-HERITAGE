@@ -10,11 +10,15 @@ Stack: **Next.js (App Router) + TypeScript + Tailwind CSS + Prisma + MySQL**.
 - npm
 - MySQL 8+ **or** Docker Desktop (recommended on Windows)
 
-## Windows one-click setup
+## Windows one-click setup (blank PC)
 
-Double-click **`setup.exe`** at the repo root (same binary as `setup/dist/setup.exe`).
+Works on a clean Windows machine with nothing installed yet.
 
-It installs/checks Git + Node if needed, clones or updates this repo under `%USERPROFILE%\Documents\GitHub\Hannibal`, runs `npm install`, creates `.env` from `.env.example` when missing, starts `npm run dev`, and opens [http://localhost:3000](http://localhost:3000).
+1. Download or copy **`setup.exe`** (repo root, same as `setup/dist/setup.exe`).
+2. Double-click it. **Approve the UAC prompt** — setup requests Administrator so silent installs work.
+3. Wait while it installs missing tools (**Git**, **Node.js LTS**, **Docker Desktop** via winget → Chocolatey → official silent installers), refreshes `PATH`, clones/updates this repo under `%USERPROFILE%\Documents\GitHub\Hannibal` (or the folder next to an existing clone), runs `npm install`, creates `.env`, starts MySQL (`docker compose up -d`), runs Prisma generate / `migrate deploy` / seed, starts `npm run dev`, and opens [http://localhost:3000](http://localhost:3000).
+
+If Docker’s engine needs a reboot/WSL2 on first install, the storefront still starts with the static catalog fallback; re-run `setup.exe` after Docker is ready to finish DB setup.
 
 Details / rebuild: [`setup/README.md`](setup/README.md).
 
