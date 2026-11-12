@@ -47,6 +47,30 @@ async function DashboardOverview() {
         </ul>
       </section>
 
+      <section
+        aria-label="Outils"
+        className="flex flex-col gap-4 border-t border-[#ddd4c5]/90 pt-8"
+      >
+        <div>
+          <p className="text-[11px] tracking-[0.16em] text-[#8a8278] uppercase">
+            Outils
+          </p>
+          <h3 className="mt-2 text-lg font-semibold tracking-tight">
+            Fond transparent
+          </h3>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-[#5c564e]">
+            Traitez des photos produit en lot : upload → aperçu damier →
+            téléchargement PNG avec fond transparent.
+          </p>
+        </div>
+        <Link
+          href="/dashboard/tools/background"
+          className="inline-flex min-h-11 w-fit items-center justify-center border border-[#1c1917] bg-[#1c1917] px-5 py-3 text-xs tracking-[0.16em] text-[#f7f3ec] uppercase transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
+        >
+          Ouvrir l’outil →
+        </Link>
+      </section>
+
       <section aria-label="Recent orders" className="flex flex-col gap-4">
         <div className="flex items-baseline justify-between gap-4">
           <h3 className="text-lg font-semibold tracking-tight">

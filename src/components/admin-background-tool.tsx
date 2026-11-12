@@ -92,7 +92,7 @@ export function AdminBackgroundTool() {
     <div className="flex max-w-3xl flex-col gap-6">
       <div className="flex flex-col gap-3">
         <label className="flex flex-col gap-2 text-sm text-[#5c564e]">
-          Upload image(s)
+          Upload image(s) — plusieurs fichiers OK
           <input
             type="file"
             accept="image/jpeg,image/png,image/webp,image/gif"
@@ -103,13 +103,13 @@ export function AdminBackgroundTool() {
           />
         </label>
         <p className="text-sm leading-6 text-[#5c564e]">
-          Runs on the server with a local ONNX model (no paid key). First run
-          may take longer while the model loads. Optional: set{" "}
-          <code className="text-[#1c1917]">REMOVE_BG_API_KEY</code> for
-          remove.bg quality.
+          Traitement serveur local (ONNX, sans clé payante). Le premier run
+          peut être plus long le temps de charger le modèle. Optionnel :{" "}
+          <code className="text-[#1c1917]">REMOVE_BG_API_KEY</code> pour une
+          qualité remove.bg supérieure.
         </p>
         {pending ? (
-          <p className="text-sm text-[#1c1917]">Removing background…</p>
+          <p className="text-sm text-[#1c1917]">Suppression du fond…</p>
         ) : null}
         {error ? <p className="text-sm text-red-800">{error}</p> : null}
       </div>
@@ -136,7 +136,7 @@ export function AdminBackgroundTool() {
                   onClick={() => download(item)}
                   className="inline-flex min-h-11 shrink-0 items-center border border-[#1c1917] bg-[#1c1917] px-4 text-xs tracking-[0.14em] text-[#f7f3ec] uppercase"
                 >
-                  Download PNG
+                  Télécharger PNG
                 </button>
               </div>
             </li>
