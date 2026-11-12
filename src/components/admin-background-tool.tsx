@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useEffect, useState } from "react";
+import { ThemedFilePicker } from "@/components/themed-file-picker";
 
 type ResultItem = {
   id: string;
@@ -74,13 +75,6 @@ export function AdminBackgroundTool() {
     }
   }
 
-  function onPick(event: ChangeEvent<HTMLInputElement>) {
-    const files = event.target.files;
-    event.currentTarget.value = "";
-    if (!files?.length) return;
-    void processFiles(files);
-  }
-
   function download(item: ResultItem) {
     const link = document.createElement("a");
     link.href = item.previewUrl;
@@ -91,22 +85,24 @@ export function AdminBackgroundTool() {
   return (
     <div className="flex max-w-3xl flex-col gap-6">
       <div className="flex flex-col gap-3">
-        <label className="flex flex-col gap-2 text-sm text-[#5c564e]">
+        <p className="text-sm text-[#5c564e]">
           Upload image(s) — plusieurs fichiers OK
-          <input
-            type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif"
-            multiple
-            disabled={pending}
-            onChange={onPick}
-            className="text-sm text-[#5c564e]"
-          />
-        </label>
+        </p>
+        <ThemedFilePicker
+          accept="image/jpeg,image/png,image/webp,image/gif"
+          multiple
+          disabled={pending}
+          buttonLabel={pending ? "Processing…" : "Choose images"}
+          onFiles={(files) => {
+            if (files?.length) void processFiles(files);
+          }}
+        />
         <p className="text-sm leading-6 text-[#5c564e]">
           Traitement serveur local (ONNX, sans clé payante). Le premier run
           peut être plus long le temps de charger le modèle. Optionnel :{" "}
           <code className="text-[#1c1917]">REMOVE_BG_API_KEY</code> pour une
-          qualité remove.bg supérieure.
+          qualité remove.bg supérieure. Si les assets imgly manquent, repli
+          automatique sur remove.bg / chroma.
         </p>
         {pending ? (
           <p className="text-sm text-[#1c1917]">Suppression du fond…</p>

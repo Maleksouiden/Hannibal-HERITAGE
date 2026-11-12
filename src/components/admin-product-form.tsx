@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { ThemedFilePicker } from "@/components/themed-file-picker";
 
 export type AdminProductFormValues = {
   id?: string;
@@ -56,28 +57,39 @@ export function AdminProductForm({ mode, initial }: AdminProductFormProps) {
     try {
       let uploadFile: File = file;
       if (removeBackground) {
-        const cutForm = new FormData();
-        cutForm.append("file", file);
-        const cutResponse = await fetch(
-          "/api/admin/tools/background-remove",
-          {
-            method: "POST",
-            credentials: "same-origin",
-            body: cutForm,
-          },
-        );
-        if (!cutResponse.ok) {
-          const cutData = (await cutResponse.json().catch(() => null)) as {
-            error?: string;
-          } | null;
-          throw new Error(cutData?.error ?? "Background removal failed");
+        try {
+          const cutForm = new FormData();
+          cutForm.append("file", file);
+          const cutResponse = await fetch(
+            "/api/admin/tools/background-remove",
+            {
+              method: "POST",
+              credentials: "same-origin",
+              body: cutForm,
+            },
+          );
+          if (!cutResponse.ok) {
+            const cutData = (await cutResponse.json().catch(() => null)) as {
+              error?: string;
+            } | null;
+            throw new Error(cutData?.error ?? "Background removal failed");
+          }
+          const png = await cutResponse.blob();
+          uploadFile = new File(
+            [png],
+            `${file.name.replace(/\.[^.]+$/, "")}-nobg.png`,
+            { type: "image/png" },
+          );
+        } catch (bgErr) {
+          // Never block product image save if BG remove fails — keep original.
+          console.error("[admin-product-form] BG remove failed", bgErr);
+          setError(
+            bgErr instanceof Error
+              ? `Background removal failed (${bgErr.message}); uploaded original image.`
+              : "Background removal failed; uploaded original image.",
+          );
+          uploadFile = file;
         }
-        const png = await cutResponse.blob();
-        uploadFile = new File(
-          [png],
-          `${file.name.replace(/\.[^.]+$/, "")}-nobg.png`,
-          { type: "image/png" },
-        );
       }
 
       const form = new FormData();
@@ -279,35 +291,32 @@ export function AdminProductForm({ mode, initial }: AdminProductFormProps) {
           Remove background before save (transparent PNG)
         </label>
 
-        <div className="flex flex-col gap-3 sm:flex-row">
+        <ThemedFilePicker
+          accept="image/jpeg,image/png,image/webp,image/gif"
+          disabled={uploading || pending}
+          buttonLabel={uploading ? "Uploading…" : "Choose image"}
+          onFiles={(files) => {
+            void onUpload(files?.[0] ?? null);
+          }}
+        />
+
+        <div className="flex min-w-0 flex-col gap-2 sm:flex-row">
           <input
-            type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif"
-            disabled={uploading || pending}
-            onChange={(event) => {
-              void onUpload(event.target.files?.[0] ?? null);
-              event.currentTarget.value = "";
-            }}
-            className="text-sm text-[#5c564e]"
+            value={urlDraft}
+            onChange={(event) => setUrlDraft(event.target.value)}
+            placeholder="/catalog/... or https://..."
+            className={fieldClass}
           />
-          <div className="flex min-w-0 flex-1 gap-2">
-            <input
-              value={urlDraft}
-              onChange={(event) => setUrlDraft(event.target.value)}
-              placeholder="/catalog/... or https://..."
-              className={fieldClass}
-            />
-            <button
-              type="button"
-              onClick={() => {
-                addUrl(urlDraft);
-                setUrlDraft("");
-              }}
-              className="inline-flex min-h-11 shrink-0 items-center border border-[#1c1917] px-3 text-xs tracking-[0.14em] uppercase"
-            >
-              Add URL
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => {
+              addUrl(urlDraft);
+              setUrlDraft("");
+            }}
+            className="inline-flex min-h-11 shrink-0 items-center border border-[#1c1917] px-3 text-xs tracking-[0.14em] uppercase"
+          >
+            Add URL
+          </button>
         </div>
 
         {values.imageUrls.length > 0 ? (

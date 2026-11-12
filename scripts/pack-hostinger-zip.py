@@ -28,6 +28,7 @@ INCLUDE_FILES = (
     "package.json",
     "package-lock.json",
     "next.config.mjs",
+    "postcss.config.mjs",
     "tsconfig.json",
     "eslint.config.mjs",
     "prisma7.config.ts",

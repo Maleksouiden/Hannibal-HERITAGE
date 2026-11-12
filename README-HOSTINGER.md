@@ -24,6 +24,9 @@ Copy names from `.env.example`. Important for Hostinger:
 - Set a strong `AUTH_SECRET` (long random string).
 - Set `ADMIN_EMAIL` / `ADMIN_PASSWORD` for the first seed if you run seeding on the server.
 - Optional: `REMOVE_BG_API_KEY` for higher-quality admin background removal.
+  Build also copies imgly ONNX assets into `vendor/imgly-bg-removal/`. If those
+  assets are missing at runtime, the API falls back to remove.bg / sharp chroma
+  instead of crashing product image upload.
 
 ### SWC / Turbopack / older glibc
 

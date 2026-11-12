@@ -66,3 +66,7 @@ next-env.d.ts
 # Hostinger deploy ZIP staging
 /dist/
 
+# Copied at build time by scripts/ensure-imgly-resources.mjs (large ONNX chunks)
+/vendor/
+
+.hostinger/

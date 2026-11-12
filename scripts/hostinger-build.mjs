@@ -41,5 +41,7 @@ if (process.platform !== "win32") {
 }
 
 run("npx", ["prisma", "generate"]);
+// Copy imgly ONNX resources to vendor/ so production publicPath resolves
+run("node", ["scripts/ensure-imgly-resources.mjs"]);
 // --webpack: avoid Turbopack's native-SWC requirement on Hostinger
 run("npx", ["next", "build", "--webpack"]);
