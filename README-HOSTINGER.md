@@ -54,5 +54,6 @@ NEXT_SWC_WASM=1
 ## What is excluded
 
 - `node_modules/`, `.next/`, `.git/`
+- `src/generated/` (Prisma client) — build clears it and runs `prisma generate` as the app user
 - Real `.env` / local secrets
 - Local Docker-only tooling is optional; do not point production DB at `localhost:3307`

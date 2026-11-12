@@ -34,8 +34,9 @@ yarn-error.log*
 .env*
 !.env.example
 
-# prisma generated client
-/src/generated
+# prisma generated client (never ship in Hostinger ZIP; build regenerates)
+/src/generated/
+/src/generated/prisma/
 
 # local agent tooling from prisma init (not part of the app)
 .agents/
@@ -50,8 +51,6 @@ AGENTS.md
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-/src/generated/prisma
 
 # local stub order persistence (SCRUM-13) until Prisma/MySQL
 /data/orders.json
