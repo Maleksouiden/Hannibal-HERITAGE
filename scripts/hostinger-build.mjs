@@ -1,10 +1,10 @@
 /**
- * Hostinger-safe build: clear stale Prisma client, generate, force SWC WASM
- * (Hostinger glibc may be too old for @next/swc-linux-x64-gnu).
- * Panel build command stays: npm run build
+ * Hostinger-safe build:
+ * - clear stale Prisma client
+ * - force SWC WASM (Hostinger glibc may be too old for native @next/swc-*)
+ * - build with webpack (Turbopack requires native SWC and fails on old glibc)
  *
- * Removes src/generated before prisma generate so a ZIP/upload cannot leave
- * root-owned or read-only files that cause EACCES on Hostinger.
+ * Panel: Node 22, npm, build command `npm run build`, output `.next`
  */
 import { rmSync } from "node:fs";
 import { spawnSync } from "node:child_process";
@@ -41,4 +41,5 @@ if (process.platform !== "win32") {
 }
 
 run("npx", ["prisma", "generate"]);
-run("npx", ["next", "build"]);
+// --webpack: avoid Turbopack's native-SWC requirement on Hostinger
+run("npx", ["next", "build", "--webpack"]);

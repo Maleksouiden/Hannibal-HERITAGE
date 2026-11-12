@@ -25,11 +25,13 @@ Copy names from `.env.example`. Important for Hostinger:
 - Set `ADMIN_EMAIL` / `ADMIN_PASSWORD` for the first seed if you run seeding on the server.
 - Optional: `REMOVE_BG_API_KEY` for higher-quality admin background removal.
 
-### SWC / older glibc
+### SWC / Turbopack / older glibc
 
-Hostinger Linux images may lack `GLIBC_2.29`, so the native `@next/swc-linux-x64-gnu` binary can fail. This package includes `@next/swc-wasm-nodejs` and the build script sets `NEXT_SWC_WASM=1` so Next uses the WASM compiler instead.
+Hostinger Linux images may lack `GLIBC_2.29`, so native `@next/swc-linux-x64-gnu` fails. Turbopack needs that native binary, so **`npm run build`** runs **`next build --webpack`** instead (still Node 22 / npm / output `.next`).
 
-If you still see SWC/glibc errors, also add this env var in the panel:
+`@next/swc-wasm-nodejs` stays as a dependency and the build sets `NEXT_SWC_WASM=1` so webpack’s SWC transforms can use WASM when native SWC is blocked.
+
+Optional panel env:
 
 ```text
 NEXT_SWC_WASM=1
