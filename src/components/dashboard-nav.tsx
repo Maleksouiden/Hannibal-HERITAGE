@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const NAV: Array<{ href: string; label: string; exact?: boolean }> = [
   { href: "/dashboard", label: "Overview", exact: true },
   { href: "/dashboard/products", label: "Products" },
+  { href: "/dashboard/tools/background", label: "BG remove" },
   { href: "/dashboard/inventory", label: "Inventory / vending" },
   { href: "/dashboard/users", label: "Users" },
   { href: "/dashboard/site", label: "Site content" },

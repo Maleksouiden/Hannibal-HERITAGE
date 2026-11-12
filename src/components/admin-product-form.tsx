@@ -32,6 +32,7 @@ export function AdminProductForm({ mode, initial }: AdminProductFormProps) {
   const [urlDraft, setUrlDraft] = useState("");
   const [pending, setPending] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [removeBackground, setRemoveBackground] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function update<K extends keyof AdminProductFormValues>(
@@ -53,8 +54,34 @@ export function AdminProductForm({ mode, initial }: AdminProductFormProps) {
     setUploading(true);
     setError(null);
     try {
+      let uploadFile: File = file;
+      if (removeBackground) {
+        const cutForm = new FormData();
+        cutForm.append("file", file);
+        const cutResponse = await fetch(
+          "/api/admin/tools/background-remove",
+          {
+            method: "POST",
+            credentials: "same-origin",
+            body: cutForm,
+          },
+        );
+        if (!cutResponse.ok) {
+          const cutData = (await cutResponse.json().catch(() => null)) as {
+            error?: string;
+          } | null;
+          throw new Error(cutData?.error ?? "Background removal failed");
+        }
+        const png = await cutResponse.blob();
+        uploadFile = new File(
+          [png],
+          `${file.name.replace(/\.[^.]+$/, "")}-nobg.png`,
+          { type: "image/png" },
+        );
+      }
+
       const form = new FormData();
-      form.append("file", file);
+      form.append("file", uploadFile);
       const response = await fetch("/api/admin/uploads", {
         method: "POST",
         credentials: "same-origin",
@@ -240,6 +267,17 @@ export function AdminProductForm({ mode, initial }: AdminProductFormProps) {
         <p className="text-sm text-[#5c564e]">
           Upload a file or paste an image URL (local path or absolute URL).
         </p>
+
+        <label className="flex min-h-11 items-center gap-3 text-sm text-[#5c564e]">
+          <input
+            type="checkbox"
+            checked={removeBackground}
+            onChange={(event) => setRemoveBackground(event.target.checked)}
+            disabled={uploading || pending}
+            className="size-4"
+          />
+          Remove background before save (transparent PNG)
+        </label>
 
         <div className="flex flex-col gap-3 sm:flex-row">
           <input
