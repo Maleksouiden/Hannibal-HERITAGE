@@ -1,7 +1,8 @@
-import { createRequire } from "node:module";
+import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
+import os from "node:os";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import sharp from "sharp";
 
 const ALLOWED_TYPES = new Set([
@@ -13,109 +14,131 @@ const ALLOWED_TYPES = new Set([
 
 export const BG_REMOVE_MAX_BYTES = 8 * 1024 * 1024;
 
-const requireFromCwd = createRequire(path.join(process.cwd(), "package.json"));
+const DEFAULT_REMBG_MODEL = "isnet-general-use";
+const REMBG_TIMEOUT_MS = 180_000;
 
 /**
- * Local ONNX matting via @imgly/background-removal-node when assets exist.
- * Fallback order: remove.bg (if key) → imgly → sharp chroma (never throws past chroma).
+ * Primary: Python rembg (isnet/u2net) via scripts/rembg_cli.py.
+ * Fallback: remove.bg when REMOVE_BG_API_KEY is set, then sharp chroma.
  */
 export async function removeImageBackground(
   bytes: Buffer,
   mimeType: string,
 ): Promise<Buffer> {
-  const type = ALLOWED_TYPES.has(mimeType) ? mimeType : "image/png";
-  const apiKey = process.env.REMOVE_BG_API_KEY?.trim();
+  void mimeType;
 
+  try {
+    return await removeViaRembg(bytes);
+  } catch (err) {
+    console.error("[remove-background] rembg failed, trying fallbacks", err);
+  }
+
+  const apiKey = process.env.REMOVE_BG_API_KEY?.trim();
   if (apiKey) {
     try {
       return await removeViaRemoveBg(bytes, apiKey);
     } catch (err) {
-      console.error("[remove-background] remove.bg failed, trying local", err);
+      console.error("[remove-background] remove.bg failed, trying chroma", err);
     }
-  }
-
-  const publicPath = resolveImglyPublicPath();
-  if (publicPath) {
-    try {
-      return await removeViaImgly(bytes, type, publicPath);
-    } catch (err) {
-      console.error(
-        "[remove-background] imgly failed, falling back to chroma",
-        err,
-      );
-    }
-  } else {
-    console.warn(
-      "[remove-background] imgly resources.json missing; using chroma fallback",
-    );
   }
 
   return removeViaChroma(bytes);
 }
 
-/** Candidate dirs that may hold resources.json + model chunks. */
-export function resolveImglyDistDirs(): string[] {
-  const dirs: string[] = [];
-  const seen = new Set<string>();
+function resolvePythonBin(): string {
+  const fromEnv = process.env.BG_REMOVE_PYTHON?.trim();
+  if (fromEnv) return fromEnv;
+  return process.platform === "win32" ? "python" : "python3";
+}
 
-  function add(dir: string) {
-    const resolved = path.resolve(dir);
-    if (seen.has(resolved)) return;
-    seen.add(resolved);
-    dirs.push(resolved);
+function resolveRembgScript(): string {
+  const fromEnv = process.env.BG_REMOVE_REMBG_SCRIPT?.trim();
+  if (fromEnv) return path.resolve(fromEnv);
+  return path.join(process.cwd(), "scripts", "rembg_cli.py");
+}
+
+function resolveRembgModel(): string {
+  return process.env.BG_REMOVE_MODEL?.trim() || DEFAULT_REMBG_MODEL;
+}
+
+async function removeViaRembg(bytes: Buffer): Promise<Buffer> {
+  const script = resolveRembgScript();
+  if (!existsSync(script)) {
+    throw new Error(`rembg CLI missing at ${script}`);
   }
+
+  const python = resolvePythonBin();
+  const model = resolveRembgModel();
+  const tmpRoot = await mkdtemp(path.join(os.tmpdir(), "hh-rembg-"));
+  const inputPath = path.join(tmpRoot, "input.bin");
+  const outputPath = path.join(tmpRoot, "output.png");
 
   try {
-    const main = requireFromCwd.resolve("@imgly/background-removal-node");
-    add(path.dirname(main));
-  } catch {
-    // package may be unresolved during trace; other candidates still apply
-  }
+    await writeFile(inputPath, bytes);
 
-  add(
-    path.join(
-      process.cwd(),
-      "vendor",
-      "imgly-bg-removal",
-    ),
-  );
-  add(
-    path.join(
-      process.cwd(),
-      "node_modules",
-      "@imgly",
-      "background-removal-node",
-      "dist",
-    ),
-  );
+    await new Promise<void>((resolve, reject) => {
+      const refineOff =
+        process.env.BG_REMOVE_REFINE?.trim().toLowerCase() === "0" ||
+        process.env.BG_REMOVE_REFINE?.trim().toLowerCase() === "false";
+      const args = [
+        script,
+        "--input",
+        inputPath,
+        "--output",
+        outputPath,
+        "--model",
+        model,
+        refineOff ? "--no-refine-fabric" : "--refine-fabric",
+      ];
+      const child = spawn(python, args, {
+        stdio: ["ignore", "pipe", "pipe"],
+        env: process.env,
+        windowsHide: true,
+      });
 
-  return dirs;
-}
+      let stderr = "";
+      const timer = setTimeout(() => {
+        child.kill("SIGKILL");
+        reject(new Error(`rembg timed out after ${REMBG_TIMEOUT_MS}ms`));
+      }, REMBG_TIMEOUT_MS);
 
-function resolveImglyPublicPath(): string | null {
-  for (const distDir of resolveImglyDistDirs()) {
-    if (existsSync(path.join(distDir, "resources.json"))) {
-      return `${pathToFileURL(distDir).href}/`;
+      child.stderr.on("data", (chunk: Buffer) => {
+        stderr += chunk.toString("utf8");
+        if (stderr.length > 4000) stderr = stderr.slice(-4000);
+      });
+
+      child.on("error", (err) => {
+        clearTimeout(timer);
+        reject(
+          new Error(
+            `Failed to start Python (${python}): ${err.message}. Install rembg: python -m pip install -r requirements-rembg.txt`,
+          ),
+        );
+      });
+
+      child.on("close", (code) => {
+        clearTimeout(timer);
+        if (code === 0) {
+          resolve();
+          return;
+        }
+        const detail = stderr.trim().slice(0, 500);
+        reject(
+          new Error(
+            `rembg exited ${code}${detail ? `: ${detail}` : ""}. Ensure Python rembg is installed.`,
+          ),
+        );
+      });
+    });
+
+    const png = await readFile(outputPath);
+    if (png.length < 32) {
+      throw new Error("rembg returned an empty PNG");
     }
+    return png;
+  } finally {
+    await rm(tmpRoot, { recursive: true, force: true }).catch(() => undefined);
   }
-  return null;
-}
-
-async function removeViaImgly(
-  bytes: Buffer,
-  mimeType: string,
-  publicPath: string,
-): Promise<Buffer> {
-  const { removeBackground } = await import("@imgly/background-removal-node");
-  const input = new Blob([new Uint8Array(bytes)], { type: mimeType });
-  const result = await removeBackground(input, {
-    publicPath,
-    model: "medium",
-    output: { format: "image/png", quality: 1 },
-    // Avoid worker quirks on some shared hosts
-    proxyToWorker: false,
-  });
-  return Buffer.from(await result.arrayBuffer());
 }
 
 async function removeViaRemoveBg(
@@ -149,7 +172,7 @@ async function removeViaRemoveBg(
 
 /**
  * Last-resort: sample corner colors and punch near-matching pixels to alpha 0.
- * Good enough for studio / solid backdrops when ONNX assets are unavailable.
+ * Only useful for near-solid studio backdrops.
  */
 async function removeViaChroma(bytes: Buffer): Promise<Buffer> {
   const { data, info } = await sharp(bytes)
@@ -226,8 +249,4 @@ function averageRgb(
 
 export function isAllowedBgRemoveType(mimeType: string): boolean {
   return ALLOWED_TYPES.has(mimeType);
-}
-
-export function imglyResourcesAvailable(): boolean {
-  return resolveImglyPublicPath() !== null;
 }

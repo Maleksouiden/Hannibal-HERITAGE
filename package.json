@@ -17,7 +17,6 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@imgly/background-removal-node": "^1.4.5",
     "@next/swc-wasm-nodejs": "^16.4.5",
     "@prisma/adapter-mariadb": "^7.10.1",
     "@prisma/client": "^7.10.1",

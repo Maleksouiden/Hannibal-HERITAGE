@@ -33,6 +33,7 @@ INCLUDE_FILES = (
     "eslint.config.mjs",
     "prisma7.config.ts",
     ".env.example",
+    "requirements-rembg.txt",
     "README-HOSTINGER.md",
     "README.md",
     ".gitignore",

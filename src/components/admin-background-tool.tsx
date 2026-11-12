@@ -98,11 +98,10 @@ export function AdminBackgroundTool() {
           }}
         />
         <p className="text-sm leading-6 text-[#5c564e]">
-          Traitement serveur local (ONNX, sans clé payante). Le premier run
-          peut être plus long le temps de charger le modèle. Optionnel :{" "}
-          <code className="text-[#1c1917]">REMOVE_BG_API_KEY</code> pour une
-          qualité remove.bg supérieure. Si les assets imgly manquent, repli
-          automatique sur remove.bg / chroma.
+          Traitement serveur local via Python rembg (isnet/u2net). Le premier
+          run peut être plus long le temps de télécharger le modèle. Optionnel
+          : <code className="text-[#1c1917]">REMOVE_BG_API_KEY</code> en repli
+          payant si rembg n’est pas installé.
         </p>
         {pending ? (
           <p className="text-sm text-[#1c1917]">Suppression du fond…</p>

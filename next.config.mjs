@@ -2,16 +2,12 @@
 const nextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
-  serverExternalPackages: [
-    "@imgly/background-removal-node",
-    "onnxruntime-node",
-    "sharp",
-  ],
-  // Keep imgly model chunks + resources.json in the server trace for Hostinger.
+  serverExternalPackages: ["sharp"],
+  // rembg CLI + requirements ship with the app; Node spawns Python at runtime.
   outputFileTracingIncludes: {
     "/api/admin/tools/background-remove": [
-      "./node_modules/@imgly/background-removal-node/dist/**/*",
-      "./vendor/imgly-bg-removal/**/*",
+      "./scripts/rembg_cli.py",
+      "./requirements-rembg.txt",
     ],
   },
   turbopack: {

@@ -52,7 +52,11 @@ export async function POST(request: Request) {
     const message =
       err instanceof Error ? err.message : "Background removal failed";
     console.error("[background-remove]", err);
-    return NextResponse.json({ error: message }, { status: 500 });
+    // Keep JSON body so the admin UI can show a real reason (proxy HTML → opaque 503).
+    return NextResponse.json(
+      { error: message, engine: "failed" },
+      { status: 500 },
+    );
   }
 }
 

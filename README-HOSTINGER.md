@@ -23,10 +23,25 @@ Copy names from `.env.example`. Important for Hostinger:
 - Set `DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_USER`, `DATABASE_PASSWORD`, `DATABASE_NAME`, and matching `DATABASE_URL` to the Hostinger MySQL credentials from hPanel.
 - Set a strong `AUTH_SECRET` (long random string).
 - Set `ADMIN_EMAIL` / `ADMIN_PASSWORD` for the first seed if you run seeding on the server.
-- Optional: `REMOVE_BG_API_KEY` for higher-quality admin background removal.
-  Build also copies imgly ONNX assets into `vendor/imgly-bg-removal/`. If those
-  assets are missing at runtime, the API falls back to remove.bg / sharp chroma
-  instead of crashing product image upload.
+- Optional: `REMOVE_BG_API_KEY` as paid fallback for admin background removal.
+- **Python rembg (recommended):** Hostinger Node alone cannot run rembg. After
+  deploy, install Python 3.10+ on the server (SSH / terminal), then:
+
+  ```bash
+  python3 -m pip install --user -r requirements-rembg.txt
+  # or: python3 -m venv .venv-rembg && .venv-rembg/bin/pip install -r requirements-rembg.txt
+  ```
+
+  Set panel env if needed:
+
+  ```text
+  BG_REMOVE_PYTHON=python3
+  # or: BG_REMOVE_PYTHON=/home/USER/domains/.../public_html/.venv-rembg/bin/python
+  BG_REMOVE_MODEL=isnet-general-use
+  ```
+
+  First successful remove downloads the ONNX model (~170MB). Without Python
+  rembg, the API falls back to remove.bg (if keyed) then sharp chroma.
 
 ### SWC / Turbopack / older glibc
 
