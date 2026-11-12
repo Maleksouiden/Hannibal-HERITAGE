@@ -6,7 +6,6 @@ import {
   removeImageBackground,
 } from "@/lib/remove-background";
 
-export const runtime = "nodejs";
 export const maxDuration = 120;
 
 export async function POST(request: Request) {
