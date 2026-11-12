@@ -63,3 +63,7 @@ next-env.d.ts
 # PyInstaller work dirs (keep setup/dist/setup.exe committed if built)
 /setup/build/
 /setup/*.spec
+
+# Hostinger deploy ZIP staging
+/dist/
+
