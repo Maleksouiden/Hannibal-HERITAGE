@@ -35,5 +35,10 @@ try {
   console.warn(`Could not clear ${generatedDir}:`, err?.message ?? err);
 }
 
+// Repair bad modes from older Windows ZIPs (mode 000 → EACCES scandir).
+if (process.platform !== "win32") {
+  run("chmod", ["-R", "u+rwX,go+rX", "src", "public", "prisma", "scripts"]);
+}
+
 run("npx", ["prisma", "generate"]);
 run("npx", ["next", "build"]);

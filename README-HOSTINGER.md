@@ -57,3 +57,7 @@ NEXT_SWC_WASM=1
 - `src/generated/` (Prisma client) — build clears it and runs `prisma generate` as the app user
 - Real `.env` / local secrets
 - Local Docker-only tooling is optional; do not point production DB at `localhost:3307`
+
+## ZIP packing note
+
+Use `python scripts/pack-hostinger-zip.py` (not Windows Compress-Archive). Entries are written with Unix **755** dirs / **644** files so Hostinger can `scandir` routes like `src/app/api/account`. The build script also runs `chmod -R u+rwX,go+rX` on Linux before generate/build.
