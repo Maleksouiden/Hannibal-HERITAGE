@@ -22,36 +22,27 @@ type AuthShellProps = {
 export function AuthShell({ mode, children }: AuthShellProps) {
   const imageSrc =
     mode === "login"
-      ? "/home/olive-wood-featured.png"
-      : "/home/sajnen-featured.png";
+      ? "/home/tinja-pottery.webp"
+      : "/home/sejnane-artisan.jpg";
   const imageAlt =
     mode === "login"
-      ? "Handcrafted olive wood serving board"
-      : "Handcrafted Sejnane terracotta vessel";
+      ? "Sejnane pottery in an artisan workshop"
+      : "A Sejnane artisan shaping a terracotta vessel";
   const eyebrow = mode === "login" ? "Welcome back" : "Join the atelier";
   const title =
     mode === "login" ? "Sign in to your account" : "Create your account";
   const supporting =
     mode === "login"
-      ? "Continue shopping Sejnane pottery and olive wood, or open the admin dashboard if you manage the store."
+      ? "Continue discovering handcrafted Sejnane pottery and Tunisian olive wood."
       : "Save your details for future orders and follow Tunisian craft from kiln and grove to your table.";
 
   return (
     <div
-      className={`${display.variable} ${body.variable} relative flex w-full flex-1 flex-col overflow-hidden bg-[#ebe4d6]`}
+      className={`${display.variable} ${body.variable} relative flex w-full flex-1 flex-col overflow-hidden bg-white`}
       style={{ fontFamily: "var(--font-auth-body), sans-serif" }}
     >
-      <div
-        className="pointer-events-none absolute inset-0 opacity-70"
-        style={{
-          backgroundImage:
-            "radial-gradient(ellipse at 10% 0%, rgba(255,255,255,0.55), transparent 45%), radial-gradient(ellipse at 90% 100%, rgba(90,78,58,0.12), transparent 40%)",
-        }}
-        aria-hidden
-      />
-
-      <div className="relative mx-auto grid w-full max-w-6xl flex-1 lg:grid-cols-2">
-        <aside className="relative hidden min-h-[28rem] overflow-hidden bg-[#1c1917] lg:block">
+      <div className="relative mx-auto grid w-full max-w-[1440px] flex-1 lg:grid-cols-2">
+        <aside className="relative min-h-[14rem] overflow-hidden bg-[#1c1917] sm:min-h-[20rem] lg:min-h-[32rem]">
           <Image
             src={imageSrc}
             alt={imageAlt}
@@ -64,12 +55,13 @@ export function AuthShell({ mode, children }: AuthShellProps) {
             className="absolute inset-0 bg-gradient-to-t from-[#1c1917] via-[#1c1917]/45 to-transparent"
             aria-hidden
           />
-          <div className="absolute inset-x-0 bottom-0 p-10">
-            <p className="text-[11px] tracking-[0.28em] text-[#e8dfd0]/80 uppercase">
+          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8 lg:p-10">
+            <p className="flex items-center gap-3 text-[10px] tracking-[0.28em] text-[#e8dfd0]/85 uppercase">
+              <span className="h-px w-8 bg-[#d6b98f]" aria-hidden />
               Hannibal HERITAGE
             </p>
             <p
-              className="mt-3 max-w-sm text-3xl leading-tight font-medium text-[#f7f3ec]"
+              className="mt-2 max-w-sm text-xl leading-tight font-medium text-[#f7f3ec] sm:mt-3 sm:text-3xl"
               style={{ fontFamily: "var(--font-auth-display), serif" }}
             >
               {mode === "login"
@@ -79,9 +71,10 @@ export function AuthShell({ mode, children }: AuthShellProps) {
           </div>
         </aside>
 
-        <main className="relative flex flex-col justify-center px-4 py-12 sm:px-8 sm:py-16 lg:px-12 xl:px-16">
+        <main className="relative flex flex-col justify-center px-4 py-8 sm:px-8 sm:py-12 lg:px-12 lg:py-16 xl:px-16">
           <div className="mx-auto w-full max-w-md animate-[auth-rise_700ms_ease-out]">
-            <p className="text-[11px] tracking-[0.24em] text-[#6f675c] uppercase">
+            <p className="flex items-center gap-3 text-[10px] tracking-[0.24em] text-[#756b5d] uppercase">
+              <span className="h-px w-8 bg-[#9b7653]" aria-hidden />
               {eyebrow}
             </p>
             <h1
@@ -93,7 +86,9 @@ export function AuthShell({ mode, children }: AuthShellProps) {
             <p className="mt-4 text-sm leading-6 text-[#4a433b] sm:text-base sm:leading-7">
               {supporting}
             </p>
-            <div className="mt-8">{children}</div>
+            <div className="mt-8 border border-[#e9e3d9] bg-[#fbfaf8] p-5 sm:p-7">
+              {children}
+            </div>
           </div>
         </main>
       </div>

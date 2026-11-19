@@ -17,6 +17,7 @@ const STORAGE_KEY = "hannibal-cart-v1";
 type Listener = () => void;
 
 let lines: CartLine[] = [];
+const emptyLines: CartLine[] = [];
 const listeners = new Set<Listener>();
 let hydrated = false;
 
@@ -50,6 +51,10 @@ function ensureHydrated() {
 export function getCartLines(): CartLine[] {
   ensureHydrated();
   return lines;
+}
+
+export function getEmptyCartSnapshot(): CartLine[] {
+  return emptyLines;
 }
 
 export function getCartCount(): number {

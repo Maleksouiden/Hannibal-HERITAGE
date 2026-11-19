@@ -17,7 +17,7 @@ function safeNextPath(raw: string | undefined): string {
 }
 
 const fieldClass =
-  "min-h-12 w-full border border-[#cfc4b2] bg-[#f7f3ec]/70 px-3 py-3 text-base text-[#1c1917] outline-none transition focus-visible:border-[#1c1917] focus-visible:bg-[#f7f3ec] focus-visible:ring-1 focus-visible:ring-[#1c1917]/30 sm:text-sm";
+  "min-h-12 w-full border border-[#e1d9cc] bg-white px-3 py-3 text-base text-[#1c1917] outline-none transition focus-visible:border-[#9b7653] focus-visible:ring-1 focus-visible:ring-[#9b7653]/30 sm:text-sm";
 
 export function AuthForm({ mode, nextPath }: AuthFormProps) {
   const router = useRouter();
@@ -110,12 +110,16 @@ export function AuthForm({ mode, nextPath }: AuthFormProps) {
         />
       </label>
 
-      {error ? <p className="text-sm text-red-900">{error}</p> : null}
+      {error ? (
+        <p role="alert" className="border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-900">
+          {error}
+        </p>
+      ) : null}
 
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex min-h-12 w-full items-center justify-center bg-[#1c1917] px-5 text-xs tracking-[0.18em] text-[#f7f3ec] uppercase transition hover:bg-[#3a342c] disabled:opacity-50"
+        className="inline-flex min-h-12 w-full items-center justify-center gap-3 bg-[#293126] px-5 text-[10px] tracking-[0.18em] text-white uppercase transition hover:bg-[#3b4736] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9b7653] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {pending
           ? mode === "signup"
@@ -126,7 +130,7 @@ export function AuthForm({ mode, nextPath }: AuthFormProps) {
             : "Sign in"}
       </button>
 
-      <p className="text-sm text-[#4a433b]">
+      <p className="text-sm text-[#5c564e]">
         {mode === "signup" ? (
           <>
             Already have an account?{" "}

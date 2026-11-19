@@ -33,11 +33,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col overflow-x-clip bg-[#f7f3ec] font-sans text-[#1c1917]">
+      <body className="flex min-h-full flex-col overflow-x-clip bg-white font-sans text-[#1c1917]">
         <Suspense
           fallback={
             <div
-              className="fixed inset-x-0 top-0 z-50 h-14 border-b border-transparent bg-transparent sm:h-[4.25rem]"
+              className="fixed inset-x-0 top-0 z-50 h-16 border-b border-transparent bg-transparent sm:h-20"
               aria-hidden
             />
           }
@@ -45,7 +45,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <SiteHeader />
         </Suspense>
         {/* Spacer for fixed header; home hero pulls under with negative margin. */}
-        <div className="h-14 shrink-0 sm:h-[4.25rem]" aria-hidden />
+        <div className="h-16 shrink-0 sm:h-20" aria-hidden />
         {children}
         <SiteFooter />
       </body>

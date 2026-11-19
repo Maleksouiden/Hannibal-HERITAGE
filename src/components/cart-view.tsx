@@ -6,6 +6,7 @@ import { useSyncExternalStore } from "react";
 import {
   cartLineId,
   getCartLines,
+  getEmptyCartSnapshot,
   getCartSubtotalMinor,
   removeFromCart,
   setCartQuantity,
@@ -20,7 +21,11 @@ function productHref(line: CartLine): string {
 }
 
 export function CartView() {
-  const lines = useSyncExternalStore(subscribeCart, getCartLines, () => []);
+  const lines = useSyncExternalStore(
+    subscribeCart,
+    getCartLines,
+    getEmptyCartSnapshot,
+  );
   const subtotalMinor = useSyncExternalStore(
     subscribeCart,
     getCartSubtotalMinor,
@@ -29,19 +34,32 @@ export function CartView() {
 
   if (lines.length === 0) {
     return (
-      <div className="flex max-w-lg flex-col gap-5">
-        <p className="text-base leading-7 text-[#5c564e]">
-          Your panier is empty.
+      <div className="mx-auto flex w-full max-w-3xl flex-col items-center border border-[#e9e3d9] bg-[#fbfaf8] px-5 py-14 text-center sm:px-10 sm:py-20">
+        <span className="flex size-14 items-center justify-center rounded-full border border-[#e1d9cc] text-[#756b5d]" aria-hidden>
+          <BagIcon />
+        </span>
+        <p className="mt-6 text-[10px] tracking-[0.22em] text-[#8a8278] uppercase">
+          Your next favourite piece
         </p>
-        <div className="flex flex-wrap gap-4 text-xs tracking-[0.14em] uppercase">
-          <Link href="/sajnen" className="text-[#5c564e] hover:text-[#1c1917]">
-            Browse Sejnane
+        <h2 className="mt-2 text-3xl font-medium tracking-tight text-[#1c1917] sm:text-4xl">
+          Your panier is empty
+        </h2>
+        <p className="mt-3 max-w-md text-sm leading-7 text-[#5c564e]">
+          Explore handcrafted pieces from Tunisia and find something made to
+          stay in your home for years to come.
+        </p>
+        <div className="mt-7 flex flex-wrap justify-center gap-3">
+          <Link
+            href="/sajnen"
+            className="inline-flex min-h-12 items-center justify-center bg-[#293126] px-5 text-[10px] tracking-[0.16em] text-white uppercase transition hover:bg-[#3b4736]"
+          >
+            Explore Sejnane
           </Link>
           <Link
             href="/olive-wood"
-            className="text-[#5c564e] hover:text-[#1c1917]"
+            className="inline-flex min-h-12 items-center justify-center border border-[#d8d0c3] bg-white px-5 text-[10px] tracking-[0.16em] text-[#1c1917] uppercase transition hover:border-[#1c1917]"
           >
-            Browse olive wood
+            Explore olive wood
           </Link>
         </div>
       </div>
@@ -54,18 +72,18 @@ export function CartView() {
         {lines.map((line) => (
           <li
             key={cartLineId(line)}
-            className="grid grid-cols-[72px_minmax(0,1fr)] gap-3 py-5 sm:grid-cols-[112px_minmax(0,1fr)_auto] sm:gap-6 sm:py-6"
+            className="grid grid-cols-[80px_minmax(0,1fr)] gap-3 border-b border-[#e9e3d9] py-5 first:pt-0 sm:grid-cols-[128px_minmax(0,1fr)_auto] sm:gap-6 sm:py-6"
           >
             <Link
               href={productHref(line)}
-              className="relative aspect-square overflow-hidden bg-[#ebe4d8]"
+              className="group relative aspect-square overflow-hidden border border-[#e9e3d9] bg-white"
             >
               <Image
                 src={line.imageSrc}
                 alt={line.name}
                 fill
-                sizes="112px"
-                className="object-cover"
+                sizes="128px"
+                className="object-contain p-2 transition-transform duration-500 group-hover:scale-[1.04]"
               />
             </Link>
 
@@ -99,7 +117,7 @@ export function CartView() {
                         setCartQuantity(line.catalog, line.slug, value);
                       }
                     }}
-                    className="min-h-11 w-16 border border-[#ddd4c5] bg-transparent px-2 py-2 text-sm tabular-nums text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
+                    className="min-h-11 w-16 border border-[#ddd4c5] bg-white px-2 py-2 text-sm tabular-nums text-[#1c1917] outline-none focus-visible:ring-1 focus-visible:ring-[#9b7653]"
                     aria-label={`Quantity for ${line.name}`}
                   />
                 </label>
@@ -128,7 +146,10 @@ export function CartView() {
         ))}
       </ul>
 
-      <aside className="sticky bottom-0 z-20 -mx-4 flex flex-col gap-4 border-t border-[#ddd4c5]/70 bg-[#f7f3ec]/95 px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-md lg:static lg:mx-0 lg:border-t-0 lg:bg-transparent lg:px-0 lg:py-0 lg:pb-0 lg:backdrop-blur-none">
+      <aside className="sticky bottom-0 z-20 -mx-4 flex flex-col gap-4 border-t border-[#ddd4c5] bg-[#f7f3ec]/95 px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-md sm:rounded-xl sm:border sm:p-5 lg:static lg:mx-0 lg:rounded-2xl lg:p-6">
+        <h2 className="text-[10px] tracking-[0.2em] text-[#756b5d] uppercase">
+          Order summary
+        </h2>
         <div className="flex items-baseline justify-between gap-4">
           <span className="text-xs tracking-[0.16em] text-[#5c564e] uppercase">
             Subtotal
@@ -139,16 +160,33 @@ export function CartView() {
             className="text-lg tabular-nums text-[#1c1917]"
           />
         </div>
-        <p className="hidden text-sm leading-6 text-[#8a8278] sm:block">
-          Display currency converts for viewing only; stored prices stay in TND.
+        <p className="text-xs leading-5 text-[#756b5d]">
+          Delivery is calculated at checkout. Display currency converts for
+          viewing only; stored prices stay in TND.
         </p>
         <Link
           href="/checkout"
-          className="inline-flex min-h-11 items-center justify-center border border-[#1c1917] bg-[#1c1917] px-5 py-3 text-center text-xs tracking-[0.16em] text-[#f7f3ec] uppercase transition hover:bg-transparent hover:text-[#1c1917]"
+          className="inline-flex min-h-12 items-center justify-center gap-3 bg-[#293126] px-5 py-3 text-center text-[10px] tracking-[0.18em] text-white uppercase transition hover:bg-[#3b4736] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9b7653] focus-visible:ring-offset-2"
         >
-          Checkout
+          Continue to checkout <span aria-hidden>→</span>
         </Link>
       </aside>
     </div>
+  );
+}
+
+function BagIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="size-6"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      aria-hidden
+    >
+      <path d="M5 8h14l-1 13H6L5 8z" />
+      <path d="M9 8V6a3 3 0 0 1 6 0v2" />
+    </svg>
   );
 }

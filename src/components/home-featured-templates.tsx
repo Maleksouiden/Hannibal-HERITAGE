@@ -11,21 +11,15 @@ type HomeFeaturedTemplatesProps = {
   templates: HomeTemplate[];
 };
 
-/**
- * Full-bleed rotating hero — Artisans Collection–style Discover slides.
- */
 export function HomeFeaturedTemplates({ templates }: HomeFeaturedTemplatesProps) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
-
-  useEffect(() => {
-    setActive(0);
-  }, [templates]);
+  const activeIndex = templates.length > 0 ? active % templates.length : 0;
 
   useEffect(() => {
     if (paused || templates.length < 2) return;
     const id = window.setInterval(() => {
-      setActive((i) => (i + 1) % templates.length);
+      setActive((index) => (index + 1) % templates.length);
     }, AUTO_MS);
     return () => window.clearInterval(id);
   }, [paused, templates.length]);
@@ -34,7 +28,7 @@ export function HomeFeaturedTemplates({ templates }: HomeFeaturedTemplatesProps)
 
   return (
     <section
-      className="relative isolate -mt-14 min-h-[100dvh] w-full overflow-hidden bg-[#1c1917] sm:-mt-[4.25rem]"
+      className="relative isolate -mt-16 min-h-[100svh] w-full overflow-hidden bg-[#1c1917] sm:-mt-20"
       aria-roledescription="carousel"
       aria-label="Featured collections"
       onMouseEnter={() => setPaused(true)}
@@ -47,7 +41,7 @@ export function HomeFeaturedTemplates({ templates }: HomeFeaturedTemplatesProps)
       }}
     >
       {templates.map((template, index) => {
-        const isActive = index === active;
+        const isActive = index === activeIndex;
         return (
           <article
             key={template.id}
@@ -67,54 +61,70 @@ export function HomeFeaturedTemplates({ templates }: HomeFeaturedTemplatesProps)
               }`}
             />
             <div
-              className="absolute inset-0 bg-gradient-to-t from-[#1c1917]/88 via-[#1c1917]/40 to-[#1c1917]/20"
+              className="absolute inset-0 bg-gradient-to-t from-[#151311]/85 via-[#151311]/35 to-[#151311]/10"
               aria-hidden
             />
 
-            <div className="absolute inset-x-0 bottom-0 mx-auto flex max-w-6xl flex-col gap-4 px-4 pb-24 pt-16 sm:gap-5 sm:px-6 sm:pb-28">
-              <p className="text-[10px] tracking-[0.28em] text-[#e8dfd0]/80 uppercase sm:text-xs">
+            <div className="absolute inset-x-0 bottom-0 mx-auto flex max-w-6xl flex-col items-start gap-4 px-5 pb-28 pt-28 sm:gap-5 sm:px-8 sm:pb-32 lg:px-10">
+              <p className="flex items-center gap-3 text-[10px] tracking-[0.28em] text-white/85 uppercase sm:text-xs">
+                <span className="h-px w-8 bg-white/70" aria-hidden />
                 {template.catalog === "sajnen" ? "Sejnane" : "Olive wood"}
               </p>
-              <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-balance text-[#f7f3ec] sm:text-5xl md:text-6xl">
+              <h1
+                className="max-w-3xl text-4xl leading-[1.05] font-medium tracking-tight text-balance text-white sm:text-5xl md:text-6xl"
+                style={{ fontFamily: "var(--font-home-display), serif" }}
+              >
                 {template.title}
               </h1>
-              <p className="max-w-xl text-sm leading-6 text-[#e8dfd0]/90 sm:text-lg sm:leading-8">
+              <p className="max-w-xl text-sm leading-6 text-white/85 sm:text-base sm:leading-8">
                 {template.body}
               </p>
-              <div>
-                <Link
-                  href={template.href}
-                  className="inline-flex min-h-11 items-center border border-[#f7f3ec]/75 px-6 py-3 text-xs tracking-[0.2em] text-[#f7f3ec] uppercase transition hover:bg-[#f7f3ec] hover:text-[#1c1917]"
-                  tabIndex={isActive ? 0 : -1}
-                >
-                  Discover
-                </Link>
-              </div>
+              <Link
+                href={template.href}
+                className="mt-2 inline-flex min-h-12 items-center gap-5 bg-white px-6 text-[10px] tracking-[0.2em] text-[#1c1917] uppercase transition hover:bg-[#eee9e0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1917]"
+                tabIndex={isActive ? 0 : -1}
+              >
+                {template.ctaLabel}
+                <span aria-hidden>→</span>
+              </Link>
             </div>
           </article>
         );
       })}
 
       {templates.length > 1 ? (
-        <div className="absolute bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 sm:bottom-6 sm:gap-2">
-          {templates.map((template, index) => (
-            <button
-              key={template.id}
-              type="button"
-              aria-label={`Show ${template.catalog === "sajnen" ? "Sejnane" : "Olive wood"} slide`}
-              aria-current={index === active}
-              className="flex min-h-11 min-w-11 items-center justify-center"
-              onClick={() => setActive(index)}
-            >
-              <span
-                className={`block h-1.5 transition-all duration-500 ${
-                  index === active ? "w-8 bg-[#f7f3ec]" : "w-3 bg-[#f7f3ec]/40"
-                }`}
-              />
-            </button>
-          ))}
+        <div className="absolute right-5 bottom-[max(1.25rem,env(safe-area-inset-bottom))] z-10 flex items-center gap-2 sm:right-8 lg:right-[max(calc((100vw-72rem)/2),2.5rem)]">
+          {templates.map((template, index) => {
+            const selected = index === activeIndex;
+            return (
+              <button
+                key={template.id}
+                type="button"
+                aria-label={`Show ${template.catalog === "sajnen" ? "Sejnane" : "Olive wood"} slide`}
+                aria-current={selected}
+                className="flex min-h-11 min-w-11 items-center justify-center"
+                onClick={() => setActive(index)}
+              >
+                <span
+                  className={`block h-1 transition-all duration-500 ${
+                    selected ? "w-8 bg-white" : "w-4 bg-white/45"
+                  }`}
+                />
+              </button>
+            );
+          })}
         </div>
       ) : null}
+
+      <a
+        href="#intro"
+        className="absolute bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-5 z-10 hidden items-center gap-3 text-[9px] tracking-[0.2em] text-white/75 uppercase sm:flex lg:left-[max(calc((100vw-72rem)/2),2.5rem)]"
+      >
+        <span className="flex size-9 items-center justify-center rounded-full border border-white/45">
+          <span aria-hidden>↓</span>
+        </span>
+        Scroll to discover
+      </a>
     </section>
   );
 }

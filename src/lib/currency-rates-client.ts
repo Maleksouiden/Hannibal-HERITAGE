@@ -58,7 +58,7 @@ export function convertMajor(
 
 export function formatMoney(amount: number, currency: CurrencyCode): string {
   const fractionDigits = currency === "JPY" ? 0 : currency === "TND" ? 3 : 2;
-  return new Intl.NumberFormat(undefined, {
+  return new Intl.NumberFormat("fr-TN", {
     style: "currency",
     currency,
     minimumFractionDigits: fractionDigits,

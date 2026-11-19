@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { DisplayPrice } from "@/components/display-price";
+import { ZoomImage } from "@/components/zoom-image";
 import type { CatalogProduct } from "@/lib/catalog-repository";
 import { productPriceMinor } from "@/lib/product-display";
 
@@ -68,79 +68,66 @@ export function CreamCatalogView({
   }
 
   return (
-    <div className="relative overflow-hidden bg-[#f4efe6] text-[#1c1917]">
-      <div
-        className="pointer-events-none absolute inset-0 opacity-50"
-        style={{
-          backgroundImage:
-            "radial-gradient(ellipse 40% 35% at 78% 18%, rgba(210,196,170,0.55), transparent 70%), radial-gradient(ellipse 28% 22% at 8% 92%, rgba(196,180,150,0.35), transparent 70%), radial-gradient(ellipse 24% 18% at 92% 88%, rgba(196,180,150,0.3), transparent 70%)",
-        }}
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute top-24 right-[8%] hidden h-[22rem] w-[22rem] rounded-full bg-[#e5dccb]/80 blur-[2px] lg:block"
-        aria-hidden
-      />
-      <svg
-        className="pointer-events-none absolute top-10 right-[42%] hidden h-40 w-32 text-[#cfc3ae]/45 lg:block"
-        viewBox="0 0 120 160"
-        fill="currentColor"
-        aria-hidden
-      >
-        <ellipse cx="70" cy="30" rx="18" ry="40" transform="rotate(25 70 30)" />
-        <ellipse cx="45" cy="70" rx="16" ry="36" transform="rotate(-15 45 70)" />
-        <ellipse cx="85" cy="95" rx="14" ry="32" transform="rotate(40 85 95)" />
-      </svg>
-
-      <section className="relative mx-auto grid w-full max-w-6xl items-center gap-10 px-4 pt-10 pb-6 sm:px-6 sm:pt-14 lg:grid-cols-2 lg:gap-8 lg:pb-4">
-        <div className="relative z-10 max-w-xl animate-[auth-rise_700ms_ease-out]">
-          <div className="flex items-center gap-3">
-            <p className="text-[11px] tracking-[0.28em] text-[#1c1917] uppercase">
-              Catalog
+    <div className="relative overflow-hidden bg-white text-[#1c1917]">
+      <section className="mx-auto w-full max-w-[1440px] px-4 py-6 sm:px-8 sm:py-10">
+        <div className="grid overflow-hidden rounded-2xl border border-[#e9e3d9] bg-[#f7f3ec] lg:min-h-[34rem] lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="flex flex-col items-start justify-center px-6 py-10 sm:px-10 sm:py-14 lg:px-16 lg:py-16">
+            <p className="flex items-center gap-3 text-[10px] tracking-[0.24em] text-[#756b5d] uppercase sm:text-[11px]">
+              <span className="h-px w-8 bg-[#9b7653]" aria-hidden />
+              Tunisian artisan collection
             </p>
-            <span className="h-px w-14 bg-[#1c1917]/70" aria-hidden />
+            <h1
+              className="mt-5 max-w-xl text-5xl leading-[0.98] font-medium tracking-tight text-balance sm:text-6xl lg:text-7xl"
+              style={{ fontFamily: "var(--font-catalog-display), serif" }}
+            >
+              {title}
+            </h1>
+            <p className="mt-5 max-w-lg text-sm leading-7 text-[#5c564e] sm:text-base sm:leading-8">
+              {description}
+            </p>
+            <button
+              type="button"
+              onClick={scrollToGrid}
+              className="mt-8 inline-flex min-h-12 items-center gap-5 bg-[#1c1917] px-6 text-[10px] tracking-[0.2em] text-white uppercase transition hover:bg-[#3a342c] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9b7653] focus-visible:ring-offset-2"
+            >
+              Discover the collection <span aria-hidden>→</span>
+            </button>
+            <div className="mt-9 flex flex-wrap gap-x-7 gap-y-3 border-t border-[#d9d0c3] pt-5 text-[10px] tracking-[0.14em] text-[#756b5d] uppercase sm:text-[11px]">
+              <span>{products.length} curated pieces</span>
+              <span>Made in Tunisia</span>
+            </div>
           </div>
-          <h1
-            className="mt-5 text-5xl leading-none font-medium tracking-tight sm:text-7xl"
-            style={{ fontFamily: "var(--font-catalog-display), serif" }}
-          >
-            {title}
-          </h1>
-          <p className="mt-5 max-w-md text-sm leading-7 text-[#5c564e] sm:text-[15px] sm:leading-7">
-            {description}
-          </p>
-          <button
-            type="button"
-            onClick={scrollToGrid}
-            className="mt-8 inline-flex min-h-12 items-center bg-[#1c1917] px-6 text-[11px] tracking-[0.18em] text-[#f7f3ec] uppercase transition hover:bg-[#3a342c]"
-          >
-            Discover the collection →
-          </button>
-        </div>
 
-        <div className="relative mx-auto flex w-full max-w-lg items-center justify-center lg:max-w-none lg:justify-end">
-          <div
-            className="absolute top-1/2 right-[8%] h-[18rem] w-[18rem] -translate-y-1/2 rounded-full bg-[#e8dfd0] sm:h-[22rem] sm:w-[22rem]"
-            aria-hidden
-          />
-          <div className="relative z-10 w-[88%] max-w-md animate-[auth-rise_900ms_ease-out]">
-            <Image
+          <div className="relative min-h-[20rem] bg-white sm:min-h-[26rem] lg:min-h-full">
+            <div className="absolute inset-4 border border-[#eee9e1] sm:inset-6 lg:inset-8" aria-hidden />
+            <ZoomImage
               src={heroImageSrc}
               alt={heroImageAlt}
-              width={720}
-              height={900}
+              fill
               priority
-              className="h-auto w-full object-contain drop-shadow-[0_24px_40px_rgba(40,30,20,0.12)]"
+              sizes="(max-width: 1024px) 100vw, 48vw"
+              className="object-contain p-8 sm:p-12 lg:p-16"
             />
+            <span className="absolute right-8 bottom-8 text-[9px] tracking-[0.2em] text-[#8a8278] uppercase sm:right-12 sm:bottom-12">
+              {title} · Tunisia
+            </span>
           </div>
         </div>
       </section>
 
       <section
         id={collectionId}
-        className="relative mx-auto w-full max-w-6xl px-4 pt-6 pb-8 sm:px-6"
+        className="relative mx-auto w-full max-w-[1440px] scroll-mt-24 px-4 pt-8 pb-12 sm:px-8 sm:pt-10 sm:pb-16"
       >
-        <div className="flex flex-col gap-4 border-b border-[#ddd4c5]/80 pb-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-5 border-b border-[#e8e8e5] pb-5 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-[10px] tracking-[0.22em] text-[#8a8278] uppercase">
+              The collection
+            </p>
+            <p className="mt-2 text-sm text-[#5c564e]">
+              Showing {visible.length} of {products.length} pieces
+            </p>
+          </div>
           <nav
             aria-label="Product filters"
             className="flex flex-wrap items-center gap-x-5 gap-y-2"
@@ -152,6 +139,7 @@ export function CreamCatalogView({
                   key={item.id}
                   type="button"
                   onClick={() => setFilter(item.id)}
+                  aria-pressed={active}
                   className={`relative pb-1 text-[11px] tracking-[0.16em] uppercase transition ${
                     active
                       ? "text-[#1c1917]"
@@ -175,7 +163,7 @@ export function CreamCatalogView({
             <select
               value={sort}
               onChange={(event) => setSort(event.target.value as SortId)}
-              className="min-h-9 cursor-pointer border border-[#ddd4c5] bg-transparent px-2 py-1.5 text-[11px] tracking-[0.12em] text-[#1c1917] uppercase outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
+              className="min-h-10 cursor-pointer border border-[#ddd4c5] bg-white px-3 py-2 text-[11px] tracking-[0.12em] text-[#1c1917] uppercase outline-none focus-visible:ring-1 focus-visible:ring-[#c4b8a5]"
             >
               <option value="newest">Newest First</option>
               <option value="name">Name A–Z</option>
@@ -183,7 +171,7 @@ export function CreamCatalogView({
           </label>
         </div>
 
-        <ul className="mt-10 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 sm:gap-y-12 md:grid-cols-3 lg:grid-cols-4">
+        <ul className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-6 sm:gap-y-12 md:grid-cols-3 lg:grid-cols-4">
           {visible.map((product, index) => {
             const priceMinor = productPriceMinor(product);
             const isLiked = Boolean(liked[product.slug]);
@@ -198,17 +186,17 @@ export function CreamCatalogView({
                 }}
               >
                 <div className="group flex flex-col gap-3">
-                  <div className="relative aspect-square overflow-hidden rounded-2xl bg-[#ebe4d8]">
+                  <div className="group/image relative aspect-square overflow-hidden border border-[#eee9e1] bg-[#fbfaf8] transition-shadow duration-300 hover:shadow-[0_12px_30px_rgba(28,25,23,0.08)]">
                     <Link
                       href={href}
                       className="absolute inset-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c4b8a5]"
                     >
-                      <Image
+                      <ZoomImage
                         src={product.imageSrc}
                         alt={product.imageAlt}
                         fill
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                        className="object-cover transition duration-700 group-hover:scale-[1.03]"
+                        className="object-contain p-4 sm:p-6"
                       />
                     </Link>
                     <button
@@ -220,7 +208,7 @@ export function CreamCatalogView({
                       }
                       aria-pressed={isLiked}
                       onClick={() => toggleLike(product.slug)}
-                      className="absolute top-3 right-3 z-10 inline-flex size-9 items-center justify-center rounded-full bg-[#f7f3ec]/80 text-[#1c1917] backdrop-blur-sm transition hover:bg-[#f7f3ec]"
+                      className="absolute top-3 right-3 z-10 inline-flex size-10 items-center justify-center rounded-full border border-[#e8e4dc] bg-white/95 text-[#1c1917] shadow-sm backdrop-blur-sm transition hover:scale-105 hover:bg-white"
                     >
                       <svg
                         viewBox="0 0 24 24"
@@ -239,7 +227,7 @@ export function CreamCatalogView({
                     className="flex flex-col gap-1 focus-visible:outline-none"
                   >
                     <h2
-                      className="text-[15px] leading-snug text-[#1c1917] sm:text-base"
+                      className="text-[15px] leading-snug text-[#1c1917] transition-colors group-hover:text-[#756b5d] sm:text-base"
                       style={{
                         fontFamily: "var(--font-catalog-display), serif",
                       }}

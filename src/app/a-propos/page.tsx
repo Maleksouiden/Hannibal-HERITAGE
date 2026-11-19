@@ -25,13 +25,13 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div
-      className={`${display.variable} ${body.variable} flex w-full flex-1 flex-col bg-[#efe8dc] text-[#1c1917]`}
+      className={`${display.variable} ${body.variable} flex w-full flex-1 flex-col bg-white text-[#1c1917]`}
       style={{ fontFamily: "var(--font-about-body), sans-serif" }}
     >
-      <section className="relative isolate min-h-[min(100dvh,52rem)] w-full overflow-hidden bg-[#1c1917]">
+      <section className="relative isolate min-h-[min(88dvh,50rem)] w-full overflow-hidden bg-[#1c1917]">
         <Image
-          src="/home/sajnen-featured.png"
-          alt="Handcrafted Sejnane terracotta vessel"
+          src="/home/sejnane-artisan.jpg"
+          alt="A Sejnane artisan shaping a terracotta vessel"
           fill
           priority
           sizes="100vw"
@@ -43,12 +43,13 @@ export default function AboutPage() {
         />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(247,243,236,0.12),transparent_55%)]" aria-hidden />
 
-        <div className="relative z-10 mx-auto flex min-h-[min(100dvh,52rem)] w-full max-w-6xl flex-col justify-end px-4 pb-16 pt-28 sm:px-6 sm:pb-24">
+        <div className="relative z-10 mx-auto flex min-h-[min(88dvh,50rem)] w-full max-w-[1440px] flex-col justify-end px-4 pb-14 pt-28 sm:px-8 sm:pb-20">
           <AboutReveal>
             <p
-              className="text-[11px] tracking-[0.28em] text-[#e8dfd0]/85 uppercase"
+              className="flex items-center gap-3 text-[10px] tracking-[0.28em] text-[#e8dfd0]/85 uppercase sm:text-[11px]"
               style={{ fontFamily: "var(--font-about-body), sans-serif" }}
             >
+              <span className="h-px w-8 bg-[#d6b98f]" aria-hidden />
               Hannibal HERITAGE
             </p>
             <h1
@@ -62,23 +63,38 @@ export default function AboutPage() {
               artisans, and olive wood turned from ancient Mediterranean
               groves.
             </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="/sajnen"
+                className="inline-flex min-h-12 items-center gap-4 bg-white px-5 text-[10px] tracking-[0.18em] text-[#1c1917] uppercase transition hover:bg-[#f1ece4]"
+              >
+                Shop Sejnane <span aria-hidden>→</span>
+              </Link>
+              <Link
+                href="/olive-wood"
+                className="inline-flex min-h-12 items-center gap-4 border border-white/65 px-5 text-[10px] tracking-[0.18em] text-white uppercase transition hover:bg-white/10"
+              >
+                Explore olive wood <span aria-hidden>→</span>
+              </Link>
+            </div>
           </AboutReveal>
         </div>
       </section>
 
-      <AboutReveal className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+      <AboutReveal className="mx-auto w-full max-w-[1440px] px-4 py-14 sm:px-8 sm:py-24">
         <section className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-          <div className="relative aspect-[4/5] overflow-hidden bg-[#d9d0c2]">
+          <div className="relative aspect-[4/5] overflow-hidden border border-[#e9e3d9] bg-[#f7f3ec] p-4 sm:p-8">
             <Image
               src="/catalog/sajnen/beige-terracotta-sajnen-vessel.png"
               alt="Beige terracotta Sejnane vessel"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover"
+              className="object-contain p-4 sm:p-8"
             />
           </div>
           <div className="max-w-xl">
-            <p className="text-[11px] tracking-[0.24em] text-[#6f675c] uppercase">
+            <p className="flex items-center gap-3 text-[10px] tracking-[0.24em] text-[#756b5d] uppercase">
+              <span className="h-px w-8 bg-[#9b7653]" aria-hidden />
               Sejnane
             </p>
             <h2
@@ -100,64 +116,57 @@ export default function AboutPage() {
             </p>
             <Link
               href="/sajnen"
-              className="mt-8 inline-flex min-h-11 items-center border border-[#1c1917] px-5 text-xs tracking-[0.18em] text-[#1c1917] uppercase transition hover:bg-[#1c1917] hover:text-[#f7f3ec]"
+              className="mt-8 inline-flex min-h-12 items-center gap-4 bg-[#293126] px-5 text-[10px] tracking-[0.18em] text-white uppercase transition hover:bg-[#3b4736]"
             >
-              Explore Sejnane
+              Explore Sejnane <span aria-hidden>→</span>
             </Link>
           </div>
         </section>
       </AboutReveal>
 
-      <section className="relative overflow-hidden border-y border-[#d7cdb8]/80 bg-[#2a3126] text-[#f3efe6]">
-        <div
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 20% 20%, rgba(232,223,198,0.18), transparent 40%), radial-gradient(circle at 80% 80%, rgba(120,100,70,0.25), transparent 45%)",
-          }}
-          aria-hidden
-        />
-        <AboutReveal className="relative mx-auto grid w-full max-w-6xl items-center gap-10 px-4 py-16 sm:px-6 sm:py-24 lg:grid-cols-2 lg:gap-16">
+      <section className="border-y border-[#e9e3d9] bg-[#f7f3ec] text-[#1c1917]">
+        <AboutReveal className="mx-auto grid w-full max-w-[1440px] items-center gap-10 px-4 py-14 sm:px-8 sm:py-24 lg:grid-cols-2 lg:gap-16">
           <div className="order-2 max-w-xl lg:order-1">
-            <p className="text-[11px] tracking-[0.24em] text-[#cbbfa8] uppercase">
+            <p className="flex items-center gap-3 text-[10px] tracking-[0.24em] text-[#756b5d] uppercase">
+              <span className="h-px w-8 bg-[#9b7653]" aria-hidden />
               Olive wood
             </p>
             <h2
-              className="mt-3 text-3xl leading-tight font-medium tracking-tight text-[#f7f3ec] sm:text-5xl"
+              className="mt-3 text-3xl leading-tight font-medium tracking-tight sm:text-5xl"
               style={{ fontFamily: "var(--font-about-display), serif" }}
             >
               Grain from ancient groves
             </h2>
-            <p className="mt-5 text-base leading-7 text-[#d8d0c2] sm:text-lg sm:leading-8">
+            <p className="mt-5 text-base leading-7 text-[#5c564e] sm:text-lg sm:leading-8">
               Tunisia’s olive trees stand for centuries. From their dense,
               swirling timber, artisans cut boards, bowls, and utensils —
               sanded smooth, never lacquered into anonymity.
             </p>
-            <p className="mt-4 text-base leading-7 text-[#d8d0c2] sm:text-lg sm:leading-8">
+            <p className="mt-4 text-base leading-7 text-[#5c564e] sm:text-lg sm:leading-8">
               Olive wood carries warmth to the table: honeyed veins, soft
               weight in the hand, a Mediterranean quiet that belongs in daily
               ritual as much as in display.
             </p>
             <Link
               href="/olive-wood"
-              className="mt-8 inline-flex min-h-11 items-center border border-[#f7f3ec]/70 px-5 text-xs tracking-[0.18em] text-[#f7f3ec] uppercase transition hover:bg-[#f7f3ec] hover:text-[#1c1917]"
+              className="mt-8 inline-flex min-h-12 items-center gap-4 border border-[#1c1917] px-5 text-[10px] tracking-[0.18em] text-[#1c1917] uppercase transition hover:bg-[#1c1917] hover:text-white"
             >
-              Explore olive wood
+              Explore olive wood <span aria-hidden>→</span>
             </Link>
           </div>
-          <div className="relative order-1 aspect-[4/5] overflow-hidden bg-[#1c1917] lg:order-2">
+          <div className="relative order-1 aspect-[4/5] overflow-hidden border border-[#e1d9cc] bg-white p-4 sm:p-8 lg:order-2">
             <Image
               src="/home/olive-wood-featured.png"
               alt="Handcrafted olive wood serving board"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover"
+              className="object-contain p-4 sm:p-8"
             />
           </div>
         </AboutReveal>
       </section>
 
-      <AboutReveal className="mx-auto w-full max-w-3xl px-4 py-20 text-center sm:px-6 sm:py-28">
+      <AboutReveal className="mx-auto w-full max-w-3xl px-4 py-16 text-center sm:px-6 sm:py-28">
         <p className="text-[11px] tracking-[0.24em] text-[#6f675c] uppercase">
           Our promise
         </p>
@@ -175,15 +184,15 @@ export default function AboutPage() {
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/sajnen"
-            className="inline-flex min-h-11 items-center bg-[#1c1917] px-5 text-xs tracking-[0.18em] text-[#f7f3ec] uppercase transition hover:bg-transparent hover:text-[#1c1917] hover:outline hover:outline-1 hover:outline-[#1c1917]"
+            className="inline-flex min-h-12 items-center gap-3 bg-[#293126] px-5 text-[10px] tracking-[0.18em] text-white uppercase transition hover:bg-[#3b4736]"
           >
-            Shop Sejnane
+            Shop Sejnane <span aria-hidden>→</span>
           </Link>
           <Link
             href="/olive-wood"
-            className="inline-flex min-h-11 items-center border border-[#1c1917] px-5 text-xs tracking-[0.18em] text-[#1c1917] uppercase transition hover:bg-[#1c1917] hover:text-[#f7f3ec]"
+            className="inline-flex min-h-12 items-center gap-3 border border-[#1c1917] px-5 text-[10px] tracking-[0.18em] text-[#1c1917] uppercase transition hover:bg-[#1c1917] hover:text-white"
           >
-            Shop olive wood
+            Shop olive wood <span aria-hidden>→</span>
           </Link>
         </div>
       </AboutReveal>

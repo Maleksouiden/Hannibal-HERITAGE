@@ -2,11 +2,25 @@ import Link from "next/link";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-auto border-t border-[#e4dccf] bg-[#1c1917] text-[#e8dfd0]">
-      <div className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-2 lg:grid-cols-4">
+    <footer className="mt-auto border-t border-[#e4dccf] bg-[#293126] text-[#e8dfd0]">
+      <div className="mx-auto grid w-full max-w-[1440px] gap-10 px-4 py-12 sm:px-8 sm:py-16 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
-          <p className="text-[11px] tracking-[0.22em] text-[#cbbfa8] uppercase">
-            Company
+          <Link href="/" className="inline-flex flex-col">
+            <span className="font-serif text-xl leading-none tracking-[0.14em] text-[#f7f3ec] uppercase">
+              Hannibal
+            </span>
+            <span className="mt-1 text-[8px] tracking-[0.42em] text-[#cbbfa8] uppercase">
+              Heritage
+            </span>
+          </Link>
+          <p className="mt-5 max-w-xs text-sm leading-6 text-[#c9c2b5]">
+            Tunisian pottery and olive wood, shaped by skilled hands and made
+            for everyday life.
+          </p>
+        </div>
+        <div>
+          <p className="text-[10px] tracking-[0.22em] text-[#cbbfa8] uppercase">
+            Discover
           </p>
           <ul className="mt-4 flex flex-col gap-2 text-sm">
             <li>
@@ -35,8 +49,8 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <p className="text-[11px] tracking-[0.22em] text-[#cbbfa8] uppercase">
-            Help
+          <p className="text-[10px] tracking-[0.22em] text-[#cbbfa8] uppercase">
+            Your account
           </p>
           <ul className="mt-4 flex flex-col gap-2 text-sm">
             <li>
@@ -62,33 +76,8 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <p className="text-[11px] tracking-[0.22em] text-[#cbbfa8] uppercase">
-            Store
-          </p>
-          <ul className="mt-4 flex flex-col gap-2 text-sm">
-            <li>
-              <Link href="/sajnen" className="transition hover:text-[#f7f3ec]">
-                Pottery
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/olive-wood"
-                className="transition hover:text-[#f7f3ec]"
-              >
-                Tableware
-              </Link>
-            </li>
-            <li>
-              <Link href="/a-propos" className="transition hover:text-[#f7f3ec]">
-                Heritage
-              </Link>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <p className="text-[11px] tracking-[0.22em] text-[#cbbfa8] uppercase">
-            Artisans
+          <p className="text-[10px] tracking-[0.22em] text-[#cbbfa8] uppercase">
+            The makers
           </p>
           <ul className="mt-4 flex flex-col gap-2 text-sm">
             <li>
@@ -97,20 +86,17 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
-              <Link
-                href="/olive-wood"
-                className="transition hover:text-[#f7f3ec]"
-              >
+              <Link href="/olive-wood" className="transition hover:text-[#f7f3ec]">
                 Olive wood makers
               </Link>
             </li>
           </ul>
-          <p className="mt-6 text-xs leading-5 text-[#9a9082]">
-            Hannibal HERITAGE — Tunisian craft for the contemporary home.
+          <p className="mt-5 max-w-xs text-xs leading-5 text-[#a9a294]">
+            Discover the story and heritage behind each collection.
           </p>
         </div>
       </div>
-      <div className="border-t border-white/10 px-4 py-5 text-center text-[10px] tracking-[0.16em] text-[#9a9082] uppercase sm:px-6">
+      <div className="border-t border-white/10 px-4 py-5 text-center text-[10px] tracking-[0.16em] text-[#a9a294] uppercase sm:px-8">
         © 2026 Hannibal HERITAGE
       </div>
     </footer>

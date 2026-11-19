@@ -12,7 +12,7 @@ export type HomeTemplate = {
 /**
  * Featured home templates from Notion HOME PAGE (SCRUM-7).
  * Copy sourced from Hannibal HERITAGE Content notes (Sejnane + olive wood).
- * Images pulled from Notion product/template assets into `public/home/`.
+ * Images are local copies of client-supplied Notion assets in `public/home/`.
  */
 export const HOME_TEMPLATES: HomeTemplate[] = [
   {
@@ -22,8 +22,8 @@ export const HOME_TEMPLATES: HomeTemplate[] = [
     body: "Discover the beauty of authentic Tunisian pottery, shaped by skilled women artisans and rooted in a centuries-old tradition recognized by UNESCO as Intangible Cultural Heritage.",
     ctaLabel: "Explore Sejnane",
     href: "/sajnen",
-    imageSrc: "/home/sajnen-featured.png",
-    imageAlt: "Handcrafted Sejnane terracotta vessel",
+    imageSrc: "/home/sejnane-artisan.jpg",
+    imageAlt: "Sejnane artisan shaping a terracotta pot",
   },
   {
     id: "olive-wood",

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useRef, useState, type ReactNode } from "react";
 import { DisplayPrice } from "@/components/display-price";
+import { ZoomImage } from "@/components/zoom-image";
 import { addToCart } from "@/lib/cart-store";
 import type { CatalogProduct } from "@/lib/catalog-repository";
 import {
@@ -98,19 +99,10 @@ export function ProductDetail({ product, related = [] }: ProductDetailProps) {
 
   return (
     <div
-      className={`${display.variable} ${body.variable} relative flex w-full flex-1 flex-col overflow-hidden bg-[#f4efe6] text-[#1c1917]`}
+      className={`${display.variable} ${body.variable} relative flex w-full flex-1 flex-col overflow-hidden bg-white text-[#1c1917]`}
       style={{ fontFamily: "var(--font-pdp-body), sans-serif" }}
     >
-      <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-72 opacity-40"
-        style={{
-          backgroundImage:
-            "radial-gradient(ellipse 35% 60% at 12% 0%, rgba(180,160,130,0.28), transparent 70%)",
-        }}
-        aria-hidden
-      />
-
-      <div className="relative mx-auto w-full max-w-6xl px-4 pt-6 sm:px-6 sm:pt-8">
+      <div className="relative mx-auto w-full max-w-[1440px] px-4 pt-6 sm:px-8 sm:pt-8">
         <nav
           aria-label="Breadcrumb"
           className="flex flex-wrap items-center gap-2 text-[10px] tracking-[0.18em] text-[#8a8278] uppercase"
@@ -127,9 +119,9 @@ export function ProductDetail({ product, related = [] }: ProductDetailProps) {
         </nav>
       </div>
 
-      <section className="relative mx-auto grid w-full max-w-6xl gap-10 px-4 py-8 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-14 lg:py-12">
+      <section className="relative mx-auto grid w-full max-w-[1440px] gap-8 px-4 py-6 sm:px-8 sm:py-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:gap-14 lg:py-12">
         {/* Gallery */}
-        <div className="flex min-w-0 gap-3 sm:gap-4">
+        <div className="flex min-w-0 items-start gap-3 rounded-2xl bg-[#f7f3ec] p-3 sm:gap-4 sm:p-5">
           {images.length > 1 ? (
             <div className="hidden w-16 shrink-0 flex-col items-center gap-2 sm:flex">
               <button
@@ -142,7 +134,7 @@ export function ProductDetail({ product, related = [] }: ProductDetailProps) {
               </button>
               <div
                 ref={thumbRail}
-                className="flex max-h-[28rem] w-full flex-col gap-2 overflow-y-auto scroll-smooth pr-1"
+                className="flex max-h-[34rem] w-full flex-col gap-2 overflow-y-auto scroll-smooth pr-1"
               >
                 {images.map((src, index) => (
                   <button
@@ -151,11 +143,11 @@ export function ProductDetail({ product, related = [] }: ProductDetailProps) {
                     aria-label={`View image ${index + 1}`}
                     aria-current={index === active}
                     onClick={() => setActive(index)}
-                    className={`relative aspect-square w-full overflow-hidden rounded-xl bg-[#ebe4d8] ring-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c4b8a5] ${
+                    className={`relative aspect-square w-full overflow-hidden border border-[#e9e3d9] bg-white ring-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9b7653] ${
                       index === active ? "ring-2 ring-[#1c1917]" : "ring-1 ring-transparent"
                     }`}
                   >
-                    <Image src={src} alt="" fill sizes="64px" className="object-cover" />
+                    <Image src={src} alt="" fill sizes="64px" className="object-contain p-1" />
                   </button>
                 ))}
               </div>
@@ -170,22 +162,23 @@ export function ProductDetail({ product, related = [] }: ProductDetailProps) {
             </div>
           ) : null}
 
-          <div className="relative min-w-0 flex-1 overflow-hidden rounded-3xl bg-[#ebe4d8] aspect-square sm:aspect-[5/6]">
-            <Image
+          <div className="relative min-w-0 flex-1 aspect-square overflow-hidden border border-[#e9e3d9] bg-white sm:aspect-[5/6]">
+            <ZoomImage
               src={images[active] ?? product.imageSrc}
               alt={product.imageAlt}
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover"
+              className="object-contain p-4 sm:p-8"
             />
           </div>
         </div>
 
         {/* Buy panel */}
-        <div className="flex min-w-0 flex-col justify-center gap-5 animate-[auth-rise_700ms_ease-out]">
-          <p className="text-[11px] tracking-[0.22em] text-[#6f675c] uppercase">
-            — {collectionLabel}
+        <div className="flex min-w-0 flex-col justify-center gap-5 py-2 animate-[auth-rise_700ms_ease-out] lg:py-8">
+          <p className="flex items-center gap-3 text-[10px] tracking-[0.22em] text-[#756b5d] uppercase">
+            <span className="h-px w-8 bg-[#9b7653]" aria-hidden />
+            {collectionLabel}
           </p>
           <h1
             className="max-w-lg text-3xl leading-tight font-medium tracking-tight text-balance sm:text-5xl"
@@ -196,20 +189,20 @@ export function ProductDetail({ product, related = [] }: ProductDetailProps) {
           <DisplayPrice
             priceMinor={priceMinor}
             sourceCurrency={product.currency}
-            className="text-2xl font-bold tracking-tight text-[#1c1917] sm:text-3xl"
+            className="text-2xl font-semibold tracking-tight text-[#1c1917] sm:text-3xl"
           />
 
           <p
-            className={`flex items-center gap-2 text-sm ${
+            className={`flex w-fit items-center gap-2 rounded-full border px-3 py-1.5 text-xs ${
               sellable
                 ? isLowStock(product)
-                  ? "text-amber-800"
-                  : "text-[#2f6b3a]"
-                : "text-red-900"
+                  ? "border-amber-200 bg-amber-50 text-amber-900"
+                  : "border-[#dce7dc] bg-[#f3f8f2] text-[#315d3b]"
+                : "border-red-200 bg-red-50 text-red-900"
             }`}
           >
             <span
-              className={`size-2 rounded-full ${
+              className={`size-1.5 rounded-full ${
                 sellable
                   ? isLowStock(product)
                     ? "bg-amber-700"
@@ -229,8 +222,8 @@ export function ProductDetail({ product, related = [] }: ProductDetailProps) {
             {product.description}
           </p>
 
-          <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-stretch">
-            <div className="inline-flex min-h-12 items-center justify-between gap-4 rounded-md bg-[#e8dfd0] px-3">
+          <div className="flex flex-col gap-3 border-y border-[#e9e3d9] py-5 sm:flex-row sm:items-stretch">
+            <div className="inline-flex min-h-12 items-center justify-between gap-4 border border-[#e1d9cc] bg-white px-3">
               <button
                 type="button"
                 aria-label="Decrease quantity"
@@ -258,7 +251,7 @@ export function ProductDetail({ product, related = [] }: ProductDetailProps) {
               type="button"
               onClick={handleAdd}
               disabled={!sellable}
-              className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 bg-[#3d2f24] px-6 text-[11px] tracking-[0.16em] text-[#f7f3ec] uppercase transition hover:bg-[#2a2018] disabled:cursor-not-allowed disabled:bg-[#c4b8a5]"
+              className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 bg-[#293126] px-6 text-[10px] tracking-[0.18em] text-white uppercase transition hover:bg-[#3b4736] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9b7653] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-[#c4b8a5]"
             >
               <BagIcon />
               {!sellable
@@ -266,12 +259,12 @@ export function ProductDetail({ product, related = [] }: ProductDetailProps) {
                   ? "Out of stock"
                   : "Unavailable"
                 : added
-                  ? "Added to panier"
+                  ? "Added to your bag"
                   : "Add to cart"}
             </button>
           </div>
 
-          <ul className="mt-4 grid grid-cols-3 gap-3 border-t border-[#ddd4c5]/80 pt-6">
+          <ul className="grid grid-cols-3 gap-3 pt-1">
             <TrustItem icon={<DiamondIcon />} label="Authentic craftsmanship" />
             <TrustItem icon={<TruckIcon />} label="Secure delivery" />
             <TrustItem icon={<LeafIcon />} label="Tunisian heritage" />
@@ -287,11 +280,11 @@ export function ProductDetail({ product, related = [] }: ProductDetailProps) {
               <button
                 type="button"
                 onClick={() => setActive(index)}
-                className={`relative size-16 overflow-hidden rounded-xl bg-[#ebe4d8] ${
+                className={`relative size-16 overflow-hidden rounded-lg border border-[#eeeeeb] bg-white ${
                   index === active ? "ring-2 ring-[#1c1917]" : ""
                 }`}
               >
-                <Image src={src} alt="" fill sizes="64px" className="object-cover" />
+                <Image src={src} alt="" fill sizes="64px" className="object-contain p-1" />
               </button>
             </li>
           ))}
@@ -299,9 +292,10 @@ export function ProductDetail({ product, related = [] }: ProductDetailProps) {
       ) : null}
 
       {/* Story */}
-      <section className="relative mx-auto grid w-full max-w-6xl items-center gap-8 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-2 lg:gap-14">
-        <div className="max-w-lg">
-          <p className="text-[11px] tracking-[0.22em] text-[#6f675c] uppercase">
+      <section className="relative mx-auto grid w-full max-w-[1440px] items-center gap-8 px-4 py-10 sm:px-8 sm:py-16 lg:grid-cols-2 lg:gap-14">
+        <div className="max-w-lg px-1 sm:px-4">
+          <p className="flex items-center gap-3 text-[10px] tracking-[0.22em] text-[#756b5d] uppercase">
+            <span className="h-px w-8 bg-[#9b7653]" aria-hidden />
             The story behind the craft
           </p>
           <h2
@@ -315,32 +309,37 @@ export function ProductDetail({ product, related = [] }: ProductDetailProps) {
           </p>
           <Link
             href={storyCopy.href}
-            className="mt-7 inline-flex min-h-11 items-center border border-[#1c1917] bg-[#f7f3ec]/70 px-5 text-[11px] tracking-[0.16em] text-[#1c1917] uppercase transition hover:bg-[#1c1917] hover:text-[#f7f3ec]"
+            className="mt-7 inline-flex min-h-12 items-center gap-4 border border-[#1c1917] bg-white px-5 text-[10px] tracking-[0.18em] text-[#1c1917] uppercase transition hover:bg-[#1c1917] hover:text-white"
           >
-            Discover more →
+            Discover more <span aria-hidden>→</span>
           </Link>
         </div>
-        <div className="relative aspect-[16/10] overflow-hidden rounded-3xl bg-[#ebe4d8]">
-          <Image
+        <div className="relative aspect-[16/10] overflow-hidden border border-[#e9e3d9] bg-[#f7f3ec] p-3 sm:p-5">
+          <ZoomImage
             src={storyCopy.image}
             alt=""
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover"
+            className="object-contain p-3"
           />
         </div>
       </section>
 
       {/* Related */}
       {related.length > 0 ? (
-        <section className="relative mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-          <div className="mb-6 flex items-end justify-between gap-4">
+        <section className="relative mx-auto w-full max-w-[1440px] px-4 py-8 sm:px-8 sm:py-12">
+          <div className="mb-6 flex items-end justify-between gap-4 border-b border-[#e9e3d9] pb-5">
+            <div>
+              <p className="text-[10px] tracking-[0.22em] text-[#8a8278] uppercase">
+                Complete the collection
+              </p>
             <h2
-              className="text-2xl font-medium tracking-tight sm:text-3xl"
+              className="mt-2 text-2xl font-medium tracking-tight sm:text-3xl"
               style={{ fontFamily: "var(--font-pdp-display), serif" }}
             >
               You may also like
             </h2>
+            </div>
             <div className="flex gap-2">
               <button
                 type="button"
@@ -368,19 +367,19 @@ export function ProductDetail({ product, related = [] }: ProductDetailProps) {
               <Link
                 key={item.slug}
                 href={`${catalogHref(item.catalog)}/${item.slug}`}
-                className="w-[12.5rem] shrink-0 sm:w-[14rem]"
+                className="group w-[12.5rem] shrink-0 sm:w-[14rem]"
               >
-                <div className="relative mb-3 aspect-square overflow-hidden rounded-2xl bg-[#ebe4d8]">
-                  <Image
+                <div className="group/image relative mb-3 aspect-square overflow-hidden border border-[#e9e3d9] bg-[#fbfaf8]">
+                  <ZoomImage
                     src={item.imageSrc}
                     alt={item.imageAlt}
                     fill
                     sizes="224px"
-                    className="object-cover transition duration-500 hover:scale-[1.03]"
+                    className="object-contain p-4 transition-transform duration-500 group-hover:scale-[1.03]"
                   />
                 </div>
                 <p
-                  className="text-sm leading-snug text-[#1c1917]"
+                  className="text-sm leading-snug text-[#1c1917] transition-colors group-hover:text-[#756b5d]"
                   style={{ fontFamily: "var(--font-pdp-display), serif" }}
                 >
                   {item.name}
@@ -397,8 +396,8 @@ export function ProductDetail({ product, related = [] }: ProductDetailProps) {
       ) : null}
 
       {/* Value bar */}
-      <section className="mt-8 border-t border-[#ddd4c5]/70 bg-[#ebe4d8]/70">
-        <ul className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-8 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:gap-0">
+      <section className="mt-8 border-y border-[#e8e4dc] bg-[#f7f3ec]">
+        <ul className="mx-auto grid w-full max-w-[1440px] gap-6 px-4 py-8 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:gap-0">
           <ValueItem
             icon={<PillarIcon />}
             label="A piece of Tunisian heritage"

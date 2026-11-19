@@ -12,8 +12,19 @@ from __future__ import annotations
 
 import argparse
 import io
+import os
 import sys
 from pathlib import Path
+
+# Hostinger shared hosting: onnxruntime/OpenMP thread storms → EAGAIN.
+for _k, _v in (
+    ("OMP_NUM_THREADS", "1"),
+    ("OPENBLAS_NUM_THREADS", "1"),
+    ("MKL_NUM_THREADS", "1"),
+    ("NUMEXPR_NUM_THREADS", "1"),
+    ("ORT_NUM_THREADS", "1"),
+):
+    os.environ.setdefault(_k, _v)
 
 
 def refine_fabric_leftovers(png_bytes: bytes) -> bytes:
